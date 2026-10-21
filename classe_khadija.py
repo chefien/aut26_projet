@@ -9,8 +9,12 @@ class data():
         self.trash = self.initTrashList() #cest un dictionnaire
 
     def readFile(self): #transporter le csv à un dataFrame
-        df = pd.read_csv(self.file, delimiter = ';')
-        df = pd.DataFrame(df) #conversion au dataframe/ tableau plus beau
+        try:
+            df = pd.read_csv(self.file, delimiter = ';')
+            df = pd.DataFrame(df) #conversion au dataframe/ tableau plus beau
+        except Exception as e:
+            print(e)
+                    
         return df
     
     def initFishDict(self): # initialiser la liste du poisson item
@@ -73,6 +77,6 @@ class savingSystem():
                 
 
 
-#data1 = data("/Users/khadija/Documents/GitHub/aut26_projet/assets/fishEncylopedia(Sheet1).csv") #jsp honestly
+data1 = data("assets/fishEncylopedia(Sheet1).csv") #jsp honestly
 #le lien du fichier ne fonctionne pas correctement, faut voir cest quoi le probleme avec le fichier
 #wshhh
