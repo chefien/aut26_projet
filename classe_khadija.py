@@ -1,19 +1,26 @@
 #classe de khadija: Data(), Fishing(), savingSystem(), csv files + folder for assetz, stats()
 import pandas as pd
+import customtkinter as ctk
+from PIL import Image  # cest une librairie qui manipule les images png, jpg etc
+from tkinter import PhotoImage
 
 class data():
     def __init__(self,file):
         self.file = str(file) #file lien/nom
         self.dataFrame = self.readFile() # cest le dataframe soit le tableau en version pandas
-        self.fishEncyclopedia = self.initFishDict() # executer direct apres init + cest un dictionnaire
-        self.trash = self.initTrashList() #cest un dictionnaire
 
+        if self.dataFrame != None:
+            self.fishEncyclopedia = self.initFishDict() # executer direct apres init + cest un dictionnaire
+            self.trash = self.initTrashList() #cest un dictionnaire
+            
+        
     def readFile(self): #transporter le csv à un dataFrame
         try:
             df = pd.read_csv(self.file, delimiter = ';')
             df = pd.DataFrame(df) #conversion au dataframe/ tableau plus beau
         except Exception as e:
             print(e)
+            return None
                     
         return df
     
@@ -83,8 +90,51 @@ class statsPlot():
     '''
 
 class gifImage(): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
-    def __init__(self):
-        pass
+    def __init__(self, file, root, x, y, width, height, wait):
+        if self.checkFile(file) != None:
+            self.file = file # cest comme si jai fait au fond self.file= file
+            self.root = root
+            self.x = x
+            self.y = y 
+            self.width = width
+            self.height = height
+            self.wait = wait
+            self.showAnimation()
+        
+
+    def checkFile(self,file): #avant meme de commencer on check si l'image n'a pas de probleme
+        try:
+            Image.open(file)
+        except Exception as e:
+            print(e)
+            return None
+        return file
+    
+    def showAnimation(self):
+        openImg = Image.open(self.file)
+        self.showAnim = None
+        frames = openImg.n_frames #n_frames indique le nb d'image qui se trouve dans ce gif
+        img = [PhotoImage(file = self.file, format = f"gif -index {i}") for i in range(frames)]# par comprehension a chaque frame on call la fct et on le stock dans une liste
+
+        gifLabel = ctk.CTkLabel(self.root, text = "") # on revient avec ctk pour que ca soit compatible
+        gifLabel.place(x = self.x, y = self.y, width = self.width, height = self.height) # ou le placer
+                 
+        def animation(count):
+            newImg = img[count] # on commence avec ce frame precis
+            gifLabel.configure(image = newImg) # on prend le label et on le transforme en img
+            count += 1 # prochaine img
+
+            if count == frames: # si on arrive a la fin
+                count = 0 # on reset le compte pour qu'on puisse loop apres
+            self.showAnim = self.root.after(self.wait, lambda: animation(count) ) # on attend self.wait de seconde avant de refaire la fonction: de plus lambda fais que la fct ne s'eexecute pas immediatement, et d'attendre jusqu'a ce que la condition soit satisfaite
+        animation(0) # on fait demarer lanimation le zero cest le debut soit le count 0
+
+
+        
+        
+
+
+
 
 data1 = data("assets/fishEncylopedia(Sheet1).csv") #jsp honestly
 #le lien du fichier ne fonctionne pas correctement, faut voir cest quoi le probleme avec le fichier
