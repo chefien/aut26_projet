@@ -15,4 +15,6 @@
   nous donne les statistiques du poisson spécifié sous forme de dictionnaire
 - getDechetSpecific(name):
   nous donne les statistiques du déchet spécifié sous forme d'un dictionnaire
-  
+
+###### gifImage():
+  - elle fait fonctionner l'image gif. Pas besoin d'appeler des méthode, elle gère elle meme. 
