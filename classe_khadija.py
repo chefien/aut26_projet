@@ -9,7 +9,7 @@ class data():
         self.file = str(file) #file lien/nom
         self.dataFrame = self.readFile() # cest le dataframe soit le tableau en version pandas
 
-        if self.dataFrame != None:
+        if self.dataFrame is not None:
             self.fishEncyclopedia = self.initFishDict() # executer direct apres init + cest un dictionnaire
             self.trash = self.initTrashList() #cest un dictionnaire
             
@@ -114,10 +114,10 @@ class gifImage(): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
         openImg = Image.open(self.file)
         self.showAnim = None
         frames = openImg.n_frames #n_frames indique le nb d'image qui se trouve dans ce gif
-        img = [PhotoImage(file = self.file, format = f"gif -index {i}") for i in range(frames)]# par comprehension a chaque frame on call la fct et on le stock dans une liste
+        img = [PhotoImage(file = self.file, format = f"gif -index {i}",master = self.root) for i in range(frames)]# par comprehension a chaque frame on call la fct et on le stock dans une liste + master cest ou il va dessiner
 
-        gifLabel = ctk.CTkLabel(self.root, text = "") # on revient avec ctk pour que ca soit compatible
-        gifLabel.place(x = self.x, y = self.y, width = self.width, height = self.height) # ou le placer
+        gifLabel = ctk.CTkLabel(self.root, text = "",width = self.width, height = self.height) # on revient avec ctk pour que ca soit compatible
+        gifLabel.place(x = self.x, y = self.y) # ou le placer
                  
         def animation(count):
             newImg = img[count] # on commence avec ce frame precis
@@ -129,8 +129,11 @@ class gifImage(): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
             self.showAnim = self.root.after(self.wait, lambda: animation(count) ) # on attend self.wait de seconde avant de refaire la fonction: de plus lambda fais que la fct ne s'eexecute pas immediatement, et d'attendre jusqu'a ce que la condition soit satisfaite
         animation(0) # on fait demarer lanimation le zero cest le debut soit le count 0
 
+app = ctk.CTk()
+app.geometry("800x400")
 
-        
+fishimg = gifImage("assets/fish.gif", app,50, 50, 100, 100, 50)
+app.mainloop()
         
 
 
