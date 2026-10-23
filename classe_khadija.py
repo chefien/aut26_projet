@@ -4,7 +4,7 @@ import customtkinter as ctk
 from PIL import Image  # cest une librairie qui manipule les images png, jpg etc
 from tkinter import PhotoImage
 
-class data():
+class Data():
     def __init__(self,file):
         self.file = str(file) #file lien/nom
         self.dataFrame = self.readFile() # cest le dataframe soit le tableau en version pandas
@@ -97,7 +97,7 @@ class statsPlot():
     cette classe va stocker les stats et en tirer de lobjet user. ainsi, elle gère la création du graphique
     '''
 
-class gifImage(): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
+class GifImage(): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
     def __init__(self, file, root, x, y, width, height, wait):
         if self.checkFile(file) != None:
             self.file = file # cest comme si jai fait au fond self.file= file
@@ -140,13 +140,13 @@ class gifImage(): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
 app = ctk.CTk()
 app.geometry("800x400")
 
-fishimg = gifImage("assets/fish.gif", app,50, 50, 100, 100, 1)
+fishimg = GifImage("assets/fish.gif", app,50, 50, 100, 100, 1) # to fix the sizing
 app.mainloop()
 
 
 
 
 
-data1 = data("assets/fishEncylopedia(Sheet1).csv") #jsp honestly
+data1 = Data("assets/fishEncylopedia(Sheet1).csv") #jsp honestly
 #le lien du fichier ne fonctionne pas correctement, faut voir cest quoi le probleme avec le fichier
 #wshhh
