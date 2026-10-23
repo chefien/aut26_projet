@@ -65,8 +65,8 @@ class Data():
         return trashNames #retourne la liste de tous les noms des déchets
     def getAllNamesList(self):
             all = []
-            all.extend(self.getTrashNameList)
-            all.extend(self.getFishNameList)
+            all.extend(self.getTrashNameList())
+            all.extend(self.getFishNameList())
             return all # retourne tous les noms des objets
     def getFishAllStatsList(self): #tres specifique:elle prend les stats du dict et les met dans une list exemple de l'affichage list(1,23,hello,1212)
         fishStats = [value for dictio in self.fishEncyclopedia.values() for value in dictio.values()] # rentre dans le premier dict, et puis dans le deuxiemeet extrait les stats du dict 2

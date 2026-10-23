@@ -1,4 +1,4 @@
-﻿name;startWeight;finishWeight (kg);startSize;finishSize (cm);isFish;description;rarity
+﻿name;startWeight;finishWeight;startSize;finishSize;isFish;description;rarity
 Doré jaune;0,7;6;25;85;TRUE;;common
 Grand brochet;0,9;4,3;45;100;TRUE;;common
 Achigan à petite bouche;0,5;1,6;25;50;TRUE;;common
