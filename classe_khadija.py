@@ -53,11 +53,19 @@ class data():
     #aussi si vous voulez des setters lmk!!
     def getFishEncyclopedia(self):
         return self.fishEncyclopedia # retourne un dictionnaire le gros truc
+    
     def getTrash(self):
         return self.trash # retourne un dictionnaire le gros truc
     def getFishNameList(self):
         fishNames = [name for name in self.fishEncyclopedia.keys()]
         return fishNames #retourne la liste de tous les noms des poisssons
+    def getTrashNameList(self):
+        trashNames = [name for name in self.trash.keys()]
+        return trashNames #retourne la liste de tous les noms des déchets
+    def getAllNamesList(self):
+            all = []
+            all.extend(self.getTrashNameList, self.getFishNameList)
+            return all # retourne tous les noms des objets
     def getFishAllStatsList(self): #tres specifique:elle prend les stats du dict et les met dans une list exemple de l'affichage list(1,23,hello,1212)
         fishStats = [value for dictio in self.fishEncyclopedia.values() for value in dictio.values()] # rentre dans le premier dict, et puis dans le deuxiemeet extrait les stats du dict 2
         return fishStats # retourne TOUS les valeurs et les mets dans une liste
