@@ -7,16 +7,19 @@ class User():
     def __init__(self, name):
         self.name = name
         self.level = 0
-        self.inventory = dict()
+        self.inventory = []
 
     def getUserName(self):
         return self.name
 
     def getUserLevel(self):
-            return self.level
+        return self.level
 
     def getUserInventory(self):
-            return self.inventory
+        return self.inventory
+
+    def updateInventory(self, catch):
+        self.inventory.append(catch)
 
 
 class Catch():
