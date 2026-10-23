@@ -22,3 +22,15 @@
 
 ###### gifImage():
   - elle fait fonctionner l'image gif. Pas besoin d'appeler des méthode, elle gère elle meme. 
+###### savingSystem():
+Getters:
+
+- getInv
+- getUsername
+- getLevel
+
+Setters:
+
+- setInv
+- setUsername
+- getLevel

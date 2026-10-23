@@ -108,7 +108,7 @@ class savingSystem():
         what to save?
         inventory, user object, discovered fish, and statistics(for the matplot)
         '''
-        
+
                 
 class statsPlot():
     def __init__(self):
