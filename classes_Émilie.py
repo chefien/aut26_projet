@@ -1,5 +1,5 @@
 '''Classes par Émilie'''
-from classe_khadija import Data
+from classe_khadija import data
 import random
 
 class User():
@@ -14,6 +14,12 @@ class Catch():
     '''Poisson ou déchet possible de pêcher'''
     def __init__(self, data):
     
-        self.name = random.choice()
+        self.name = random.choice(data.getAllNamesList)
+        self.print
+        #getPoissonSpecific(name)
 
-        getPoissonSpecific(name)
+    def print(self):
+        print(self.name)
+
+data= data("assets/fishEncylopedia(Sheet1).csv")
+catch=Catch(data)
