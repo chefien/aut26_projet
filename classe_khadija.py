@@ -149,7 +149,7 @@ class GifImage(): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
 
 
 
-data1 = Data("assets/fishEncylopedia2(Sheet1).csv") #jsp honestly
+data1 = Data("assets/fishEncylopedia3.csv") #jsp honestly
 print(data1.getFishEncyclopedia())
 
 #le lien du fichier ne fonctionne pas correctement, faut voir cest quoi le probleme avec le fichier
