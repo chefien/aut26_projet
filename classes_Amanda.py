@@ -77,7 +77,7 @@ class MainApp(ctk.CTk):
     def __init__(self):
         #j'initialise mes attributs et je créer la fenêtre
         super().__init__()
-        self.geometry('1024x768')
+        self.geometry('900x600')
         self.title("Fish le poisson")
         #self.data = Data()
         #self.user = User()
