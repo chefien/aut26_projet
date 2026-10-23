@@ -10,6 +10,7 @@ class Data():
         self.dataFrame = self.readFile() # cest le dataframe soit le tableau en version pandas
 
         if self.dataFrame is not None:
+            #print(self.dataFrame)
             self.fishEncyclopedia = self.initFishDict() # executer direct apres init + cest un dictionnaire
             self.trash = self.initTrashList() #cest un dictionnaire
             
@@ -137,16 +138,18 @@ class GifImage(): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
             self.showAnim = self.root.after(self.wait, lambda: animation(count) ) # on attend self.wait de seconde avant de refaire la fonction: de plus lambda fais que la fct ne s'eexecute pas immediatement, et d'attendre jusqu'a ce que la condition soit satisfaite
         animation(0) # on fait demarer lanimation le zero cest le debut soit le count 0
 
-app = ctk.CTk()
-app.geometry("800x400")
+#app = ctk.CTk()
+#app.geometry("800x400")
 
-fishimg = GifImage("assets/fish.gif", app,50, 50, 100, 100, 1) # to fix the sizing
-app.mainloop()
-
-
+#fishimg = GifImage("assets/fish.gif", app,50, 50, 100, 100, 1) # to fix the sizing
+#app.mainloop()
 
 
 
-data1 = Data("assets/fishEncylopedia(Sheet1).csv") #jsp honestly
+
+
+data1 = Data("assets/fishEncylopedia2(Sheet1).csv") #jsp honestly
+print(data1.getFishEncyclopedia())
+
 #le lien du fichier ne fonctionne pas correctement, faut voir cest quoi le probleme avec le fichier
 #wshhh
