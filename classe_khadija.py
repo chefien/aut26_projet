@@ -3,6 +3,7 @@ import pandas as pd
 import customtkinter as ctk
 from PIL import Image  # cest une librairie qui manipule les images png, jpg etc
 from tkinter import PhotoImage
+import classes_Émilie as em
 
 class Data():
     def __init__(self,file):
@@ -81,16 +82,33 @@ class Data():
         return self.trash[name] #retourne les stats du dechets dans un dictionnaire
         
 class savingSystem():
-    def __init__(self):
+    def __init__(self, user):
      # à revoir faut mettre tous les attributs to save! (for loading/ pour chaque partie)
-        pass
+        #on save ca pour la premiere fois
+        self.inventory = user.getUserInventory()
+        self.username = user.getUserName()
+        self.level = user.getUserLevel()
+
         #on a besoin de getters et setters:
         # getters so we can be able to read the info after
+    def getInv(self):
+        return self.inventory
+    def getUsername(self):
+        return self.username
+    def getLevel(self):
+        return self.level
         # setters so we can be able to save stuff
+    def setInv(self,newInventory):
+        self.inventory = newInventory
+    def setUsername(self, newUsername):
+        self.username = newUsername
+    def setLevel(self, newLevel):
+        self.level = newLevel
         '''
         what to save?
         inventory, user object, discovered fish, and statistics(for the matplot)
         '''
+        
                 
 class statsPlot():
     def __init__(self):
