@@ -37,7 +37,7 @@ class Catch():
 
         self.print()
 
-    def print(self):
+    def print(self): #affiche les attributs
         print(self.name)
         print(self.weight)
         print(self.size)
