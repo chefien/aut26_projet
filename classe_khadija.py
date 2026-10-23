@@ -132,9 +132,9 @@ class gifImage(): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
 app = ctk.CTk()
 app.geometry("800x400")
 
-fishimg = gifImage("assets/fish.gif", app,50, 50, 100, 100, 50)
+fishimg = gifImage("assets/fish.gif", app,50, 50, 100, 100, 1)
 app.mainloop()
-        
+
 
 
 
