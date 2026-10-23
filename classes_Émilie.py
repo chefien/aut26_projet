@@ -16,7 +16,7 @@ class Catch():
     
         self.name = random.choice(data.getAllNamesList())
         
-        if self.name in data.getFishNameList():
+        if self.name in data.getFishNameList(): #pour les poissons
             
             self.weight = random.uniform(float(data.getFishSpecific(self.name)["startWeight"]), float(data.getFishSpecific(self.name)["finishWeight"]))  #(en kg)
             self.weight = round(self.weight,3)
