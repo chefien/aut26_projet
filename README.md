@@ -1,19 +1,23 @@
 ##### class khadija:
 ###### Data():
 "getters:"
-- getPoissonEncyclopedia():
+- getFishEncyclopedia():
   nous donne l'encyclopédie complete des poissons (soit un dictionnaire dans un dictionnaire)
-- getDechets():
+- getTrash():
   nous donne un dictionnaire de tous les déchets possibles (meme format que celle du précédant)
-- getPoissonNameList():
+- getFishNameList():
   nous donne une liste qui contient tous les noms des poissons possibles
-- getPoissonToutStatsList(name):
+- getTrashNameList():
+  nous donne une liste qui contient tous les noms des déchets
+- getAllNamesList():
+  nous donne une liste qui contient tous les noms 
+- getFishAllStatsList(name):
   très spécifique: nous donne tous les statistiques de tous les poissons et les met dans une liste
-- getPoissonSpecificStatsList(name):
+- getFishSpecificStatsList(name):
   très spécifique: nous donne tous les statistiques d'un poisson spécifié et les met dans une liste
-- getPoissonSpecific(name):
+- getFishSpecific(name):
   nous donne les statistiques du poisson spécifié sous forme de dictionnaire
-- getDechetSpecific(name):
+- getTrashSpecific(name):
   nous donne les statistiques du déchet spécifié sous forme d'un dictionnaire
 
 ###### gifImage():
