@@ -16,6 +16,7 @@ class Catch():
     
         self.name = random.choice(data.getAllNamesList())
         self.weight = random.randrange(data.getPoissonSpecific([self.name])["startWeight"], data.getPoissonSpecific([self.name])["finishWeight"], 0.0001)  #(en kg)
+        self.size = random.randrange(data.getPoissonSpecific([self.name])["startSize"], data.getPoissonSpecific([self.name])["finishWeight"], 0.0001)  #(en kg)
         #getPoissonSpecific(name)
         self.print()
 
