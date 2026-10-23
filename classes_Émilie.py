@@ -1,4 +1,4 @@
-'''Classes par Émilie'''
+'''Classes par Émilie''' #allo
 from classe_khadija import Data
 import random
 
