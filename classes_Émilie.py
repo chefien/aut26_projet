@@ -9,6 +9,15 @@ class User():
         self.level = 0
         self.inventory = dict()
 
+    def getUserName(self):
+        return self.name
+
+    def getUserLevel(self):
+            return self.level
+
+    def getUserInventory(self):
+            return self.inventory
+
 
 class Catch():
     '''Poisson ou déchet possible de pêcher'''
