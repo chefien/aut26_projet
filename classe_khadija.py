@@ -3,7 +3,7 @@ import pandas as pd
 import customtkinter as ctk
 from PIL import Image  # cest une librairie qui manipule les images png, jpg etc
 from tkinter import PhotoImage
-import classes_Émilie as em
+#import classes_Émilie as em
 
 class Data():
     def __init__(self,file):
@@ -116,6 +116,24 @@ class statsPlot():
     '''
     cette classe va stocker les stats et en tirer de lobjet user. ainsi, elle gère la création du graphique
     '''
+class Fishing():
+    def __init__(self,catch):
+        '''
+        one def for the attendez, one for the click one for the finish
+        '''
+        self.catch = catch
+        # self.clicks = getrarity(someone implement this)
+        self.timer = None
+        self.win = False
+        self.waiting()
+
+        def waiting(self):
+            pass
+            # maybe ill need this idk yet and see how well work with the timer
+        def fish(self):
+            pass
+            # the ground logic : maybe it will display the time or something idk, need to implement when button clicked it lowers the clicks 
+
 
 class GifImage(): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
     def __init__(self, file, root, x, y, width, height, wait):
