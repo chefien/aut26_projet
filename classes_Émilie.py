@@ -1,6 +1,9 @@
 '''Classes par Émilie''' #allo
 from classe_khadija import Data
+from classe_khadija import GifImage
+import customtkinter as ctk
 import random
+import time
 
 class User():
     '''Joueur et ses informations'''
@@ -58,5 +61,56 @@ class Catch():
         print(self.rarity)
 
 
-data = Data("assets/fishEncylopedia3.csv")
-catch = Catch(data)
+#data = Data("assets/fishEncylopedia3.csv")
+#catch = Catch(data)
+
+
+class Timer(): # fonctionne mais en perfectionnement
+    def __init__(self, seconds):
+        self.seconds = seconds
+
+    def updateTimerWithPrint(self):
+
+        global lastSecondCounted
+            
+        current_time = time.time()
+            
+        if current_time < end_time:
+            timeLeft = int(end_time - current_time)
+            
+            if timeLeft != lastSecondCounted:
+                timer_label.configure(text=f"{(timeLeft+1):02d} sec")
+                    
+                lastSecondCounted = timeLeft
+                    
+            app.after(50, timer.updateTimerWithPrint)
+        else:
+            timer_label.configure(text="C'est fini !")
+
+
+    def timingWithoutPrint(self): # non terminé
+        seconds = self.seconds
+        while seconds > 0:
+            time.sleep(1)
+            seconds -= 1
+
+        import time
+
+
+
+timer = Timer(10)
+
+app = ctk.CTk()
+app.geometry("800x400")
+
+fishimg = GifImage("assets/fish.gif", app,50, 50, 100, 100, 100) # to fix the sizing
+
+end_time = time.time() + timer.seconds
+lastSecondCounted = -1
+
+timer_label = ctk.CTkLabel(app, text=f"{timer.seconds:02d} sec", font=("Arial", 24))
+timer_label.place(x=550, y=50)
+
+timer.updateTimerWithPrint()
+
+app.mainloop()
