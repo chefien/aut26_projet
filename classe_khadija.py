@@ -81,7 +81,7 @@ class Data():
     def getTrashSpecific(self,name):
         return self.trash[name] #retourne les stats du dechets dans un dictionnaire
         
-class savingSystem():
+class SavingSystem():
     def __init__(self, user):
      # à revoir faut mettre tous les attributs to save! (for loading/ pour chaque partie)
         #on save ca pour la premiere fois
@@ -110,7 +110,7 @@ class savingSystem():
         '''
 
                 
-class statsPlot():
+class StatsPlot():
     def __init__(self):
         pass
     '''
@@ -134,12 +134,34 @@ class Fishing():
             pass
             # the ground logic : maybe it will display the time or something idk, need to implement when button clicked it lowers the clicks 
 
+class ImageConfig():
+    def __init__(self,master,fileLight,fileDark,x,y):
+        super().__init__(master)
+        self.fileLight,self.fileDark = readFile(fileLight,fileDark)
+        self.x = x
+        self.y = y
+        self.myImg = self.createImage()
 
-class GifImage(): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
-    def __init__(self, file, root, x, y, width, height, wait):
+    def readFile(self,file1, file2): 
+        try:
+           Image.open(file1)
+           Image.open(file2)
+        except Exception as e:
+            print(e)
+            return None
+                        
+        return file1,file2
+    def createImage(self):
+        img = ctk.CTkImage(light_image=Image.open(self.fileLight),dark_image=Image.open(self.fileDark),size=(self.x,self.y))
+        return img
+    def getImage(self):
+        return self.myImg
+
+class GifImage(ctk.CTkFrame): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
+    def __init__(self,master, file, x, y, width, height, wait):
+        super().__init__(master)
         if self.checkFile(file) != None:
             self.file = file # cest comme si jai fait au fond self.file= file
-            self.root = root
             self.x = x
             self.y = y 
             self.width = width
@@ -160,9 +182,9 @@ class GifImage(): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
         openImg = Image.open(self.file)
         self.showAnim = None
         frames = openImg.n_frames #n_frames indique le nb d'image qui se trouve dans ce gif
-        img = [PhotoImage(file = self.file, format = f"gif -index {i}",master = self.root) for i in range(frames)]# par comprehension a chaque frame on call la fct et on le stock dans une liste + master cest ou il va dessiner
+        img = [PhotoImage(file = self.file, format = f"gif -index {i}",master = self.master) for i in range(frames)]# par comprehension a chaque frame on call la fct et on le stock dans une liste + master cest ou il va dessiner
 
-        gifLabel = ctk.CTkLabel(self.root, text = "",width = self.width, height = self.height) # on revient avec ctk pour que ca soit compatible
+        gifLabel = ctk.CTkLabel(self.master, text = "",width = self.width, height = self.height) # on revient avec ctk pour que ca soit compatible
         gifLabel.place(x = self.x, y = self.y) # ou le placer
                  
         def animation(count):
@@ -172,14 +194,14 @@ class GifImage(): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
 
             if count == frames: # si on arrive a la fin
                 count = 0 # on reset le compte pour qu'on puisse loop apres
-            self.showAnim = self.root.after(self.wait, lambda: animation(count) ) # on attend self.wait de seconde avant de refaire la fonction: de plus lambda fais que la fct ne s'eexecute pas immediatement, et d'attendre jusqu'a ce que la condition soit satisfaite
+            self.showAnim = self.master.after(self.wait, lambda: animation(count) ) # on attend self.wait de seconde avant de refaire la fonction: de plus lambda fais que la fct ne s'eexecute pas immediatement, et d'attendre jusqu'a ce que la condition soit satisfaite
         animation(0) # on fait demarer lanimation le zero cest le debut soit le count 0
 
-#app = ctk.CTk()
-#app.geometry("800x400")
+app = ctk.CTk()
+app.geometry("800x400")
 
-#fishimg = GifImage("assets/fish.gif", app,50, 50, 100, 100, 1) # to fix the sizing
-#app.mainloop()
+fishimg = GifImage(app,"assets/fish.gif",50, 50, 100, 100, 1) # to fix the sizing
+app.mainloop()
 
 
 
