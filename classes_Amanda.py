@@ -7,20 +7,28 @@ Chaque frame est une classe, ce qui simplifie la programmation et la rend claire
 '''
 
 import customtkinter as ctk
-#from classe_khadija import data, savingSystem
-#from classes_Émilie import User, Catch
+from classes_Émilie import User
+#from classe_khadija import ImageConfig
 
 class TitleScreen(ctk.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
 
+        #image pour le background
+        '''bg = ImageConfig(master, r"assets\mainMenu.jpeg", self.master.window_width,self.master.window_height)
+        self.config(image = bg.getImage)'''
+
         #Titre du jeu
+        
         self.label = ctk.CTkLabel(self, text = "Fish le poisson", font = ("arial", 28, 'bold'))
         self.label.pack(pady = 40)
 
         #Bouton Jouer
         #Si le jeu a deja load ou non, va etre pour l'instant juste jouer
-        self.play_btn = ctk.CTkButton(self, text = 'Jouer', command = self.on_play)
+        if self.master.user.getUserName() is not None:
+            self.play_btn = ctk.CTkButton(self, text = 'Continuer', command = self.on_play)
+        else:
+            self.play_btn = ctk.CTkButton(self, text = 'Nouvelle Partie', command = self.on_play)
         self.play_btn.pack(pady = 10)
 
         #Bouton Charger
@@ -37,7 +45,6 @@ class TitleScreen(ctk.CTkFrame):
 
     def on_play(self):
         self.master.show_frame(GameScreen)
-    #exemple: self.master.show_frame(GameScreen)
 
     def on_load(self):
         print("Chargement de la sauvegarde")
@@ -110,7 +117,13 @@ class GameScreen(ctk.CTkFrame):
     #Colonne gauche, joueur + inventaire#
     #####################################
     def create_left_panel(self):
-        pass
+        #Creation du l'écran de gauche
+        self.left_panel = ctk.CTkFrame(self)
+        self.left_panel.pack(expand = True, fill = 'both')
+
+        #création du frame avec les info du joueur (nom, niveau, nmb de poissons)
+        self.user_info_frame = ctk.CTkFrame(self.left_panel,bg_color="#dee6ed")
+        self.user_info_frame.pack(side = 'top', pady = 10, height = 50, fill = 'x')
 
     ###############################################
     #Colonne milieu, etang, timer, lancer la ligne#
@@ -187,7 +200,8 @@ class MainApp(ctk.CTk):
         self.title("Fish le poisson")
         #Enlever la barre de windows afin d'enelver le x
         self.overrideredirect(True)
-        #self.data = Data()
+        self.user = User(name=None)
+        
         #self.user = User()
         self.current_frame = None
         self.show_frame(TitleScreen)
