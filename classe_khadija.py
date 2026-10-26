@@ -135,12 +135,14 @@ class Fishing():
             # the ground logic : maybe it will display the time or something idk, need to implement when button clicked it lowers the clicks 
 
 class ImageConfig():
-    def __init__(self,master,fileLight,fileDark,x,y):
-        super().__init__(master)
-        self.fileLight,self.fileDark = readFile(fileLight,fileDark)
-        self.x = x
-        self.y = y
-        self.myImg = self.createImage()
+    def __init__(self,fileLight,fileDark,x,y):
+        
+        temp = self.readFile(fileLight,fileDark)
+        if temp is not None:
+            self.fileLight,self.fileDark = temp
+            self.x = x
+            self.y = y
+            self.myImg = self.createImage()
 
     def readFile(self,file1, file2): 
         try:
