@@ -1,5 +1,6 @@
 #classe de khadija: Data(), Fishing(), savingSystem(), csv files + folder for assetz, stats()
 import pandas as pd
+import random
 import customtkinter as ctk
 from PIL import Image  # cest une librairie qui manipule les images png, jpg etc
 from tkinter import PhotoImage
@@ -121,19 +122,46 @@ class Fishing():
         '''
         one def for the attendez, one for the click one for the finish
         '''
-        self.catch = catch
-        # self.clicks = getrarity(someone implement this)
+        self.catch = catch # needs to be randomised before so you do fish(random choice of fish)
+        self.clicks = None
+        self.timerPassed= Timer(random.randint(0,100))
         self.timer = None
         self.win = False
+        #updates the clicks and timer and prepares for stage 2 
         self.waiting()
+        #stage 2 and forth will have to be manually done
 
-        def waiting(self):
+    def waiting(self):
+        newTime = self.timerPassed.timingWithoutPrint() # so the time passes
+        if newTime == 0:
             pass
-            # maybe ill need this idk yet and see how well work with the timer
-        def fish(self):
-            pass
-            # the ground logic : maybe it will display the time or something idk, need to implement when button clicked it lowers the clicks 
+            #self.clicks = getrarity
+            #self.timer = gettimer
 
+    def reducingClicks(self):
+        self.clicks = self.clicks - 1
+    def checkFinalStatus(self):
+        if self.timer != 0 and self.clicks == 0:
+            return True
+        if self.timer == 0 and self.clicks != 0:
+            return False
+
+    #getters
+    def getNbClicks(self):
+        return self.clicks
+    def getTimer(self):
+        return self.timer
+    def getWinStatus(self):
+        return self.win
+    def getCatch(self):
+        return self.catch
+    def getTimePassedFirstStage(self):
+        return self.timerPassed
+
+#setter
+    def setWinStatus(self, status):
+        self.win = status
+        
 class ImageConfig():
     def __init__(self,fileLight,fileDark,x,y):
         
