@@ -7,43 +7,77 @@ Chaque frame est une classe, ce qui simplifie la programmation et la rend claire
 '''
 
 import customtkinter as ctk
-#from classe_khadija import data, savingSystem
-#from classes_Émilie import User, Catch
+from classes_Émilie import User
+from classe_khadija import ImageConfig
 
 class TitleScreen(ctk.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
 
+        #image pour le background
+        bg = ImageConfig(r"assets\mainMenu.jpeg",r"assets\mainMenu.jpeg", self.master.window_width,self.master.window_height)
+
+        self.bg_label = ctk.CTkLabel(self, text = '', image = bg.getImage())
+        self.bg_label.place(x = 0, y = 0, relwidth = 1, relheight = 1)
+
         #Titre du jeu
+        
         self.label = ctk.CTkLabel(self, text = "Fish le poisson", font = ("arial", 28, 'bold'))
         self.label.pack(pady = 40)
 
         #Bouton Jouer
         #Si le jeu a deja load ou non, va etre pour l'instant juste jouer
-        self.play_btn = ctk.CTkButton(self, text = 'Jouer', command = self.on_play)
+        if self.master.user.getUserName() is not None:
+            self.play_btn = ctk.CTkButton(self, text = 'Continuer', command = self.on_play, corner_radius=0)
+        else:
+            self.play_btn = ctk.CTkButton(self, text = 'Nouvelle Partie', command = self.on_new_play, corner_radius=0)
         self.play_btn.pack(pady = 10)
 
         #Bouton Charger
-        self.load_btn = ctk.CTkButton(self, text = 'Charger', command = self.on_load)
+        self.load_btn = ctk.CTkButton(self, text = 'Charger', command = self.on_load, corner_radius=0)
         self.load_btn.pack(pady = 10)
 
         #Bouton Crédits
-        self.credit_btn = ctk.CTkButton(self, text = 'Crédits', command = self.credit_frame)
+        self.credit_btn = ctk.CTkButton(self, text = 'Crédits', command = self.credit_frame, corner_radius=0)
         self.credit_btn.pack(pady = 10)
 
         #Bouton Charger
-        self.quit_btn = ctk.CTkButton(self, text = 'Quitter', command = self.master.destroy)
+        self.quit_btn = ctk.CTkButton(self, text = 'Quitter', command = self.master.destroy, corner_radius=0)
         self.quit_btn.pack(pady = 10)
 
     def on_play(self):
         self.master.show_frame(GameScreen)
-    #exemple: self.master.show_frame(GameScreen)
+    def on_new_play(self):
+        self.master.show_frame(newGameScreen)
 
     def on_load(self):
         print("Chargement de la sauvegarde")
 
     def credit_frame(self):
         self.master.show_frame(CreditScreen)
+
+class newGameScreen(ctk.CTkFrame):
+    def __init__(self,master):
+        super().__init__(master)
+        
+        # Demande à l'utilisateur l'information requise
+        self.label = ctk.CTkLabel(self,text="Veuillez entrer votre nom : ")
+        self.label.pack(expand = True, pady = (0,))
+        self.entry = ctk.CTkEntry(self, placeholder_text= 'Écrire ici...')
+        self.entry.pack(pady=10, expand = True)
+
+        #Une fois prêt, l'utilisateur va aller à l'écran du jeu à l'aide d'un bouton
+        self.button = ctk.CTkButton(self, text = 'Jouer', command=self.on_next)
+        self.button.pack(pady = 10, expand = True)
+
+    def on_next(self):
+        #Initialise l'user
+        self.master.user.setUserName(self.entry.get())
+        #Lance l'écran de jeu
+        if (self.entry.get() == '') or (self.entry.get() == None):
+            self.label.configure(text = 'Veuillez entrer un nom valide')
+        else:
+            self.master.show_frame(GameScreen)
 
 class GameScreen(ctk.CTkFrame):
     def __init__(self, master):
@@ -110,7 +144,23 @@ class GameScreen(ctk.CTkFrame):
     #Colonne gauche, joueur + inventaire#
     #####################################
     def create_left_panel(self):
-        pass
+        #Creation du l'écran de gauche
+        self.left_panel = ctk.CTkFrame(self)
+        self.left_panel.pack(expand = True, fill = 'both')
+
+        #création du frame avec les info du joueur (nom, niveau, nmb de poissons)
+        self.user_info_frame = ctk.CTkFrame(self.left_panel,bg_color="#dee6ed", height = 50)
+        self.user_info_frame.pack(side = 'top', pady = 10,  fill = 'x')
+        #montre le nom du joueur
+        self.user_name_label = ctk.CTkLabel(self.user_info_frame, text = self.master.user.getUserName())
+        self.user_name_label.pack(pady = 10, side = 'LEFT')
+        #montre le niveau du joueur
+        self.user_level_label = ctk.CTkLabel(self.user_info_frame, text = f'Niveau : {self.master.user.getUserLevel()}')
+        self.user_level_label.pack(pady = 10, side = 'RIGHT')
+        #montre le nmb de poissons attrape
+        self.user_fish_label = ctk.CTkLabel(self.user_info_frame, text = f'Poissons : {self.master.user.getUserNbFish()}')
+        self.user_level_label.pack(pady = 10, side = 'RIGHT')
+
 
     ###############################################
     #Colonne milieu, etang, timer, lancer la ligne#
@@ -187,8 +237,9 @@ class MainApp(ctk.CTk):
         self.title("Fish le poisson")
         #Enlever la barre de windows afin d'enelver le x
         self.overrideredirect(True)
-        #self.data = Data()
-        #self.user = User()
+        self.user = User(name=None)
+        
+        self.user = User(None)
         self.current_frame = None
         self.show_frame(TitleScreen)
 
