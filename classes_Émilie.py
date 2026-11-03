@@ -1,16 +1,27 @@
-'''Classes par Émilie''' #allo
+'''Classes par Émilie'''
+
+
 from classe_khadija import Data
 from classe_khadija import GifImage
 import customtkinter as ctk
 import random
 import time
 
+
+
+
 class User():
     '''Joueur et ses informations'''
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
+        self.name = None
         self.level = 0
         self.inventory = []
+        self.nbFish = 0
+        self.nbTrash = 0
+        self.nbCatch = 0
+
+    def setUserName(self, name):
+        self.name = name
 
     def getUserName(self):
         return self.name
@@ -18,11 +29,41 @@ class User():
     def getUserLevel(self):
         return self.level
 
+    '''update level avec condition, si rempli change level et return vrai, sinon return faux
+    level + (level-1) +2
+    '''
+    def isLeveledUp(self):
+        if (self.level + (self.level-1) + 2) >= self.nbFish:
+            self.level += 1
+            return True
+        return False
+
     def getUserInventory(self):
         return self.inventory
 
     def updateInventory(self, catch):
         self.inventory.append(catch)
+        self.nbCatch += 1
+
+        if catch.isFish:
+            self.nbFish += 1
+        else:
+            self.nbTrash += 1
+
+    def getUserNbFish(self):
+        return self.nbFish
+
+    def getUserNbTrash(self):
+        return self.nbTrash
+
+    def getUserNbCatch(self):
+        return self.nbCatch
+
+
+
+
+
+
 
 
 class Catch():
@@ -61,56 +102,64 @@ class Catch():
         print(self.rarity)
 
 
-#data = Data("assets/fishEncylopedia3.csv")
-#catch = Catch(data)
+
+
+
+
 
 
 class Timer(): # fonctionne mais en perfectionnement
-    def __init__(self, seconds):
+    def __init__(self, seconds, positionX=None, positionY=None):
         self.seconds = seconds
+        self.lastSecondCounted = -1
+        self.isFinished = False
+        self.label = None
+
+        if positionX is not None and positionY is not None:
+            self.label = ctk.CTkLabel(app, text=f"{self.seconds:02d} sec", font=("Arial", 24))
+            self.label.place(x=positionX, y=positionY)
+        
+        self.end = time.time() + self.seconds
 
     def updateTimerWithPrint(self):
+            
+        currentTime = time.time()
+            
+        if currentTime < self.end:
+            timeLeft = int(self.end - currentTime)
+            
+            if timeLeft != self.lastSecondCounted:
+                self.label.configure(text=f"{(timeLeft+1):02d} sec")
+                self.lastSecondCounted = timeLeft
+                    
+            app.after(50, self.updateTimerWithPrint)
 
-        global lastSecondCounted
-            
-        current_time = time.time()
-            
-        if current_time < end_time:
-            timeLeft = int(end_time - current_time)
-            
-            if timeLeft != lastSecondCounted:
-                timer_label.configure(text=f"{(timeLeft+1):02d} sec")
-                    
-                lastSecondCounted = timeLeft
-                    
-            app.after(50, timer.updateTimerWithPrint)
         else:
-            timer_label.configure(text="C'est fini !")
+            self.label.configure(text="C'est fini !")
+            self.isFinished = True
 
 
-    def timingWithoutPrint(self): # non terminé
-        seconds = self.seconds
-        while seconds > 0:
-            time.sleep(1)
-            seconds -= 1
+    def timingWithoutPrint(self):
 
-        import time
+        currentTime = time.time()
+
+        #si on n'est pas encore rendu à la fin, on demande juste de rappeler la fonction
+        if currentTime < self.end:           
+            app.after(50, self.updateTimerWithPrint)
+        
+        else:
+            self.isFinished = True
+
+    def getIsFinished(self):
+        return self.isFinished
 
 
-
-timer = Timer(10)
 
 app = ctk.CTk()
 app.geometry("800x400")
 
-fishimg = GifImage("assets/fish.gif", app,50, 50, 100, 100, 100) # to fix the sizing
+timer = Timer(10, 550, 50)
 
-end_time = time.time() + timer.seconds
-lastSecondCounted = -1
-
-timer_label = ctk.CTkLabel(app, text=f"{timer.seconds:02d} sec", font=("Arial", 24))
-timer_label.place(x=550, y=50)
-
-timer.updateTimerWithPrint()
+app.after(500, timer.updateTimerWithPrint)
 
 app.mainloop()
