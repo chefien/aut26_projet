@@ -145,21 +145,21 @@ class GameScreen(ctk.CTkFrame):
     #####################################
     def create_left_panel(self):
         #Creation du l'écran de gauche
-        self.left_panel = ctk.CTkFrame(self)
-        self.left_panel.pack(expand = True, fill = 'both')
+        self.left_panel = ctk.CTkFrame(self.main_container)
+        self.left_panel.grid(row = 0, column = 0, sticky = 'nsew', pady = 10, padx = 10)
 
         #création du frame avec les info du joueur (nom, niveau, nmb de poissons)
         self.user_info_frame = ctk.CTkFrame(self.left_panel,bg_color="#dee6ed", height = 50)
-        self.user_info_frame.pack(side = 'top', pady = 10,  fill = 'x')
+        self.user_info_frame.pack(side = 'top', pady = 10, padx = 10, fill = 'x')
         #montre le nom du joueur
         self.user_name_label = ctk.CTkLabel(self.user_info_frame, text = self.master.user.getUserName())
-        self.user_name_label.pack(pady = 10, side = 'LEFT')
+        self.user_name_label.pack(pady = 10, side = 'left', padx = 10)
         #montre le niveau du joueur
         self.user_level_label = ctk.CTkLabel(self.user_info_frame, text = f'Niveau : {self.master.user.getUserLevel()}')
-        self.user_level_label.pack(pady = 10, side = 'RIGHT')
+        self.user_level_label.pack(pady = 10,anchor = 'e', padx = 10)
         #montre le nmb de poissons attrape
         self.user_fish_label = ctk.CTkLabel(self.user_info_frame, text = f'Poissons : {self.master.user.getUserNbFish()}')
-        self.user_level_label.pack(pady = 10, side = 'RIGHT')
+        self.user_fish_label.pack(pady = 10,anchor = 'e', padx = 10)
 
 
     ###############################################
@@ -237,9 +237,8 @@ class MainApp(ctk.CTk):
         self.title("Fish le poisson")
         #Enlever la barre de windows afin d'enelver le x
         self.overrideredirect(True)
-        self.user = User(name=None)
+        self.user = User()
         
-        self.user = User(None)
         self.current_frame = None
         self.show_frame(TitleScreen)
 
