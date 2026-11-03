@@ -3,7 +3,7 @@ import pandas as pd
 import random
 import customtkinter as ctk
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import (FigureanvasTkAgg, NavigationToolBar2Tk)
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from PIL import Image  # cest une librairie qui manipule les images png, jpg etc
 from tkinter import PhotoImage
 #import classes_Émilie as em
