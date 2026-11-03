@@ -2,6 +2,8 @@
 import pandas as pd
 import random
 import customtkinter as ctk
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import (FigureanvasTkAgg, NavigationToolBar2Tk)
 from PIL import Image  # cest une librairie qui manipule les images png, jpg etc
 from tkinter import PhotoImage
 #import classes_Émilie as em
@@ -119,10 +121,49 @@ class SavingSystem():
 
                 
 class StatsPlot():
-    def __init__(self):
-        pass
+    
+    def __init__(self,master,user):
+        super().__init__(master)
+        self.fishCollected, self.trashCollected = filtrate(user)
+        self.all = enumerate(user.getUserInventory)
+        self.canvas = self.ploting()
+
+    def filtrate(self,user):
+        inventory = user.getUserInventory()
+        trash = 0 
+        fish = 0
+        for item in inventory:
+            if item.getIsFish(): #redo the getters
+                fish += 1
+            else:
+                trash += 1 
+        return fish, trash
+
+    def ploting(self,x,y):
+        fishPercentage = (self.fishCollected / self.all) * 100
+        trashPercentage = (self.trashCollected / self.all) * 100
+        values = [fishPercentage,trashPercentage]
+        names = ["Nombre de poissons déja péché", "Nombre d'ordures déja péché"]
+
+        figure = Figure(figsize = (x,y), dpi = 100) #dpi cest la resolution et figsize cest la taille, figure is the blank space where the graph will be drawn
+        subplot = figure.add_subplot(111) #notre graph, add tells it to add space in the canvas for the plot, 111 its to say take the whole space
+    
+        subplot.pie(values, labels=names, autopct = "%1.0f%%")
+        subplot.set_title("Progrès de l'utilisateur")
+        canvas = FigureCanvasTkAgg(figure, master = self.master)
+        canvas.draw() #connects the empty space with the graph
+        return canvas
+        
+    def getGraph(self):
+        return self.canvas
+    def placeGraph(self,x,y):
+        self.canvas.get_tk_widget().pack(padx= x, pady= y)
+        
     '''
     cette classe va stocker les stats et en tirer de lobjet user. ainsi, elle gère la création du graphique
+    nb of fish collected
+    graph: circle to compare nb of fish and trash collected
+    
     '''
 class Fishing():
     def __init__(self,catch):
