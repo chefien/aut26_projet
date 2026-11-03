@@ -89,7 +89,8 @@ class SavingSystem():
         self.inventory = user.getUserInventory()
         self.username = user.getUserName()
         self.level = user.getUserLevel()
-
+        self.playedBefore = False
+        
         #on a besoin de getters et setters:
         # getters so we can be able to read the info after
     def getInv(self):
@@ -98,13 +99,19 @@ class SavingSystem():
         return self.username
     def getLevel(self):
         return self.level
+    def getPlayedBefore(self):
+        return self.getPlayedBefore
+    
         # setters so we can be able to save stuff
+    
     def setInv(self,newInventory):
         self.inventory = newInventory
     def setUsername(self, newUsername):
         self.username = newUsername
     def setLevel(self, newLevel):
         self.level = newLevel
+    def setPlayedBefore(self,status):
+        self.playedBefore = status
         '''
         what to save?
         inventory, user object, discovered fish, and statistics(for the matplot)
