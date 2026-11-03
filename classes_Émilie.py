@@ -16,12 +16,15 @@ class User():
         self.name = None
         self.level = 0
         self.inventory = []
-
-    def getUserName(self):
-        return self.name
+        self.nbFish = 0
+        self.nbTrash = 0
+        self.nbCatch = 0
 
     def setUserName(self, name):
         self.name = name
+
+    def getUserName(self):
+        return self.name
 
     def getUserLevel(self):
         return self.level
@@ -29,12 +32,32 @@ class User():
     '''update level avec condition, si rempli change level et return vrai, sinon return faux
     level + (level-1) +2
     '''
+    def isLeveledUp(self):
+        if (self.level + (self.level-1) + 2) >= self.nbFish:
+            self.level += 1
+            return True
+        return False
 
     def getUserInventory(self):
         return self.inventory
 
     def updateInventory(self, catch):
         self.inventory.append(catch)
+        self.nbCatch += 1
+
+        if catch.isFish:
+            self.nbFish += 1
+        else:
+            self.nbTrash += 1
+
+    def getUserNbFish(self):
+        return self.nbFish
+
+    def getUserNbTrash(self):
+        return self.nbTrash
+
+    def getUserNbCatch(self):
+        return self.nbCatch
 
 
 
@@ -89,7 +112,7 @@ class Timer(): # fonctionne mais en perfectionnement
     def __init__(self, seconds, positionX=None, positionY=None):
         self.seconds = seconds
         self.lastSecondCounted = -1
-        self.isFinish = False
+        self.isFinished = False
         self.label = None
 
         if positionX is not None and positionY is not None:
@@ -113,7 +136,7 @@ class Timer(): # fonctionne mais en perfectionnement
 
         else:
             self.label.configure(text="C'est fini !")
-            self.isFinish = True
+            self.isFinished = True
 
 
     def timingWithoutPrint(self):
@@ -125,9 +148,10 @@ class Timer(): # fonctionne mais en perfectionnement
             app.after(50, self.updateTimerWithPrint)
         
         else:
-            self.isFinish = True
+            self.isFinished = True
 
-
+    def getIsFinished(self):
+        return self.isFinished
 
 
 
