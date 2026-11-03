@@ -120,7 +120,7 @@ class SavingSystem():
         '''
 
                 
-class StatsPlot():
+class StatsPlot(ctk.CTkFrame):
     
     def __init__(self,master,user):
         super().__init__(master)
@@ -172,7 +172,7 @@ class Fishing():
         '''
         self.catch = catch # needs to be randomised before so you do fish(random choice of fish)
         self.clicks = None
-        self.timerPassed= Timer(random.randint(0,100))
+        self.timerPassed= Timer(random.randint(0,100),0,0)
         self.timer = None
         self.win = False
         #updates the clicks and timer and prepares for stage 2 
@@ -181,7 +181,7 @@ class Fishing():
 
     def waiting(self):
         newTime = self.timerPassed.timingWithoutPrint() # so the time passes
-        if newTime == 0:
+        if newTime.getIsFinished():
             pass
             #self.clicks = getrarity
             #self.timer = gettimer
@@ -189,9 +189,9 @@ class Fishing():
     def reducingClicks(self):
         self.clicks = self.clicks - 1
     def checkFinalStatus(self):
-        if self.timer != 0 and self.clicks == 0:
+        if self.timer.getIsFinished() == False and self.clicks == 0:
             return True
-        if self.timer == 0 and self.clicks != 0:
+        if self.timer.getIsFinished() == True and self.clicks != 0:
             return False
 
     #getters
