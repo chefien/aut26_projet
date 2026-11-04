@@ -15,7 +15,7 @@ class TitleScreen(ctk.CTkFrame):
         super().__init__(master)
 
         #image pour le background
-        bg = ImageConfig(r"assets\mainMenu.jpeg",r"assets\mainMenu.jpeg", self.master.window_width,self.master.window_height)
+        bg = ImageConfig(r"assets/mainMenu.jpeg",r"assets/mainMenu.jpeg", self.master.window_width,self.master.window_height)
 
         self.bg_label = ctk.CTkLabel(self, text = '', image = bg.getImage())
         self.bg_label.place(x = 0, y = 0, relwidth = 1, relheight = 1)
@@ -165,7 +165,7 @@ class GameScreen(ctk.CTkFrame):
 
         self.gallery_dict = dict()
         for i in self.master.data.getFishNameList():
-            path = f"assets\\{i}.png"
+            path = f"assets/{i}.png"
             current_fish_image = ImageConfig(path,path,100,100)
             current_button = ctk.CTkButton(self.gallery_frame_scroll,
                                            image=current_fish_image.getImage(),
@@ -214,7 +214,7 @@ class GameScreen(ctk.CTkFrame):
         self.label_fish_name =ctk.CTkLabel(self.right_panel, text = "Aucun")
         self.label_fish_name.pack(pady = 5)
 
-        fish_image = ImageConfig(r"assets\NoSelection.jpg",r"assets\NoSelection.jpg", 150,150)
+        fish_image = ImageConfig(r"assets/NoSelection.jpg",r"assets/NoSelection.jpg", 150,150)
         self.label_fish_image = ctk.CTkLabel(self.right_panel, 
                                              image=fish_image.getImage(), 
                                              height=150, width=150, 
@@ -222,6 +222,22 @@ class GameScreen(ctk.CTkFrame):
                                              border_width=2,
                                              text = '')
         self.label_fish_image.pack(pady = 5)
+
+        self.label_rarity = ctk.CTkLabel(self.right_panel,text = 'N/A')
+        self.label_rarity.pack(pady = 5)
+
+        label_desc = ctk.CTkLabel(self.right_panel, text = 'Description')
+        label_desc.pack(pady = 5)
+
+        self.label_fish_desc = ctk.CTkLabel(self.right_panel,text = 'Aucun poisson de sélectionné!',wraplength = 180)
+        self.label_fish_desc.pack(pady = 5)
+
+        label_inventory = ctk.CTkLabel(self.right_panel,text = 'Inventaire :')
+        label_inventory.pack(pady = 5,padx = 10, anchor = 'w')
+
+        self.inventory_frame_scroll = ctk.CTkScrollableFrame(self.right_panel)
+        self.inventory_frame_scroll.pack(pady=5, padx = 10, expand = True, fill = 'both')
+
 
     #######################
     #Commandes des boutons#
@@ -251,7 +267,21 @@ class GameScreen(ctk.CTkFrame):
             print(fish_name)
             #ajouter une bordure verte
             self.gallery_dict[fish_name].configure(border_width = 5)
-            ## a ajouter: right frame caracteristiques
+            #modification du right panel
+            self.modify_desc_fish(fish_name)
+
+    def modify_desc_fish(self, fish_name):
+        self.label_fish_name.configure(text = fish_name)
+
+        list_fish = self.master.data.getFishSpecificStatsList(fish_name).copy()
+
+        self.label_fish_desc.configure(text = list_fish[-2])
+
+        self.label_rarity.configure(text = list_fish[-1])
+
+        path = f"assets/{fish_name}.png"
+        fish_image = ImageConfig(path,path, 150,150)
+        self.label_fish_image.configure(image = fish_image.getImage())
     
     
 
@@ -288,7 +318,7 @@ class MainApp(ctk.CTk):
         #j'initialise mes attributs et je créer la fenêtre
         super().__init__()
 
-        self.window_width = 900
+        self.window_width = 1000
         self.window_height = 600
         self.center_window()
 
