@@ -264,8 +264,11 @@ class GifImage(ctk.CTkFrame): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
         openImg = Image.open(self.file)
         self.showAnim = None
         frames = openImg.n_frames #n_frames indique le nb d'image qui se trouve dans ce gif
-        img = [PhotoImage(file = self.file, format = f"gif -index {i}",master = self.master) for i in range(frames)]# par comprehension a chaque frame on call la fct et on le stock dans une liste + master cest ou il va dessiner
+        img = []
 
+        for i in range(frames):
+            openImg.seek(i)
+            img.append(ctk.CTkImage(light_image= openImg.copy(), size=(self.width, self.height)))
         gifLabel = ctk.CTkLabel(self.master, text = "",width = self.width, height = self.height) # on revient avec ctk pour que ca soit compatible
         gifLabel.place(x = self.x, y = self.y) # ou le placer
                  
@@ -284,7 +287,7 @@ app.geometry("800x400")
 img1 = ImageConfig("assets/mainMenu.jpeg","assets/mainMenu.jpeg",800,400)
 my_label = ctk.CTkLabel(app, text="", image=img1.getImage())
 my_label.pack(pady=10)
-fishimg = GifImage(app,"assets/canvas_export-4.gif",50, 50, 100, 100, 50) # to fix the sizing
+fishimg = GifImage(app,"assets/ocean.gif",150, 25, 100, 25, 50) # to fix the sizing
 app.mainloop()
 
 
