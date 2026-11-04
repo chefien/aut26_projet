@@ -137,15 +137,15 @@ class Catch():
 
 
 class Timer(): 
-    def __init__(self, seconds, positionX=None, positionY=None):
+    def __init__(self, master, seconds):
         self.seconds = seconds
         self.lastSecondCounted = -1
         self.isFinished = False
         self.label = None
 
-        if positionX is not None and positionY is not None:
-            self.label = ctk.CTkLabel(app, text=f"{self.seconds:02d} sec", font=("Arial", 24))
-            self.label.place(x=positionX, y=positionY)
+        
+        self.label = ctk.CTkLabel(app, text=f"{self.seconds:02d} sec", font=("Arial", 15, "bold"), text_color="#B10E0E")
+        self.label.pack(side="right", padx=10)
         
         self.end = time.time() + self.seconds
 
@@ -154,18 +154,19 @@ class Timer():
     def updateTimerWithPrint(self):
         currentTime = time.time()
             
-        if currentTime < self.end:
+        if not self.isFinished and currentTime < self.end:
             timeLeft = int(self.end - currentTime)
             
             if timeLeft != self.lastSecondCounted:
                 self.label.configure(text=f"{(timeLeft+1):02d} sec")
                 self.lastSecondCounted = timeLeft
                     
-            app.after(50, self.updateTimerWithPrint)
+            self.master.after(50, self.updateTimerWithPrint)
 
         else:
             self.label.configure(text="C'est fini !")
             self.isFinished = True
+            self.master.after(3*1000, self.autoDestruct)
 
 
 
@@ -173,8 +174,8 @@ class Timer():
         currentTime = time.time()
 
         #si on n'est pas encore rendu à la fin, on demande juste de rappeler la fonction
-        if currentTime < self.end:           
-            app.after(50, self.updateTimerWithPrint)
+        if not self.isFinished and currentTime < self.end:           
+            self.master.after(50, self.updateTimerWithPrint)
         
         else:
             self.isFinished = True
@@ -184,6 +185,14 @@ class Timer():
         return self.isFinished
 
 
+    def autoDestruct(self):
+        self.label.destroy()
+
+
+    def stop(self):
+        self.isFinished = True
+        if self.label is not None and self.label.winfo_exists():
+            self.label.configure(text="00 sec")
 
 
 
@@ -193,7 +202,7 @@ class Timer():
 app = ctk.CTk()
 app.geometry("800x400")
 
-timer = Timer(10, 550, 50)
+timer = Timer(app, 10)
 
 app.after(500, timer.updateTimerWithPrint)
 
