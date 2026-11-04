@@ -6,7 +6,6 @@ from classe_khadija import GifImage
 import customtkinter as ctk
 import random
 import time
-import pygame.mixer
 
 
 
@@ -16,8 +15,7 @@ class User():
     def __init__(self):
         self.name = None
         self.level = 0
-        self.inventoryList = [] #inventaire avec duplication d'items
-        self.inventorySet = set()  #inventaire sans duplication d'items
+        self.inventory = []
         self.nbFish = 0
         self.nbTrash = 0
         self.nbCatch = 0
@@ -44,8 +42,7 @@ class User():
         return self.nbCatch
 
     def updateInventory(self, catch):
-        self.inventoryList.append(catch)
-        self.inventorySet.add(catch)
+        self.inventory.append(catch)
         self.nbCatch += 1
 
         if catch.isFish:
@@ -189,7 +186,6 @@ class Timer():
 
 
 
-class Sounds():
 
 
 
