@@ -332,15 +332,36 @@ class GameScreen(ctk.CTkFrame):
     def on_fishing(self):
         #Il existe 3 phases de la mécanique du jeu:
 
+        #################    
         #LANCER LA LIGNE#
+        #################
 
         #genere un catch
         self.current_catch = Catch(self.master.data)
         #change le text pour montrer que le joueur est en attente d'un poisson
         self.fish_button.configure(text = "Patientez...", state = 'disabled')
         #on attend un certain moment
-        wait_time = self.current_catch.
-    
+
+        '''
+        La logique serait dependant de rareté du poisson, mais pas encore implémenté
+        wait_time = self.current_catch.rarity.seconds
+        je vais mettre 5 secondes pour l'instant
+        '''
+        sec = 5
+        wait_time = 5*1000 #milisecondes
+        self.temp_clicks_needed = 12
+        self.temp_clicks = 0
+
+        ##############################
+        #CLIQUER RAPIDEMENT (CA MORD)#
+        ##############################
+
+        self.after(wait_time, self.start_bite)
+
+    def start_bite(self):
+        self.fish_button.configure(text = "Ça mord! Cliquez vite!", state = 'normal')
+         
+
     
 
 
