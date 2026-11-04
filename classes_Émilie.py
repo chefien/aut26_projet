@@ -29,26 +29,8 @@ class User():
     def getUserLevel(self):
         return self.level
 
-    '''update level avec condition, si rempli change level et return vrai, sinon return faux
-    level + (level-1) +2
-    '''
-    def isLeveledUp(self):
-        if (self.level + (self.level-1) + 2) >= self.nbFish:
-            self.level += 1
-            return True
-        return False
-
     def getUserInventory(self):
         return self.inventory
-
-    def updateInventory(self, catch):
-        self.inventory.append(catch)
-        self.nbCatch += 1
-
-        if catch.isFish:
-            self.nbFish += 1
-        else:
-            self.nbTrash += 1
 
     def getUserNbFish(self):
         return self.nbFish
@@ -59,9 +41,23 @@ class User():
     def getUserNbCatch(self):
         return self.nbCatch
 
+    def updateInventory(self, catch):
+        self.inventory.append(catch)
+        self.nbCatch += 1
 
+        if catch.isFish:
+            self.nbFish += 1
+        else:
+            self.nbTrash += 1
 
-
+    '''update level avec condition, si rempli change level et return vrai, sinon return faux
+    level + (level-1) + 2
+    '''
+    def isLeveledUp(self):
+        if (self.level + (self.level-1) + 2) >= self.nbFish:
+            self.level += 1
+            return True
+        return False
 
 
 
@@ -91,15 +87,48 @@ class Catch():
             self.description = data.getTrashSpecific(self.name)["description"]
             self.rarity = data.getTrashSpecific(self.name)["rarity"]
 
-        self.print()
 
-    def print(self): #affiche les attributs
-        print(self.name)
-        print(self.weight)
-        print(self.size)
-        print(self.isFish)
-        print(self.description)
-        print(self.rarity)
+        #les attributs du temps d'attente, du temps pour pêcher et du nombre de clicks nécessaires pour pêcher dépendent de la rareté
+        if self.rarity == "commun":
+            self.timeWaiting = 30  #(en sec)
+            self.timeFishing = 60  #(en sec)
+            self.clicks = 150
+
+        elif self.rarity == "uncommun":
+            self.timeWaiting = 60  #(en sec)
+            self.timeFishing = 50  #(en sec)
+            self.clicks = 155
+
+        elif self.rarity == "rare":
+            self.timeWaiting = 90  #(en sec)
+            self.timeFishing = 40  #(en sec)
+            self.clicks = 160
+
+        elif self.rarity == "epic":
+            self.timeWaiting = 120  #(en sec)
+            self.timeFishing = 30  #(en sec)
+            self.clicks = 165
+
+        elif self.rarity == "legendary":
+            self.timeWaiting = 150  #(en sec)
+            self.timeFishing = 20  #(en sec)
+            self.clicks = 170 
+
+        else:
+            self.timeWaiting = 0  #(en sec)
+            self.timeFishing = 0  #(en sec)
+            self.clicks = 0     
+
+        
+
+    def getTimeWaiting(self):
+        return self.timeWaiting
+
+    def getTimeFishing(self):
+        return self.timeFishing
+
+    def getNbClicks(self):
+        return self.clicks
 
 
 
@@ -107,8 +136,7 @@ class Catch():
 
 
 
-
-class Timer(): # fonctionne mais en perfectionnement
+class Timer(): 
     def __init__(self, seconds, positionX=None, positionY=None):
         self.seconds = seconds
         self.lastSecondCounted = -1
@@ -121,8 +149,9 @@ class Timer(): # fonctionne mais en perfectionnement
         
         self.end = time.time() + self.seconds
 
+
+
     def updateTimerWithPrint(self):
-            
         currentTime = time.time()
             
         if currentTime < self.end:
@@ -139,8 +168,8 @@ class Timer(): # fonctionne mais en perfectionnement
             self.isFinished = True
 
 
-    def timingWithoutPrint(self):
 
+    def timingWithoutPrint(self):
         currentTime = time.time()
 
         #si on n'est pas encore rendu à la fin, on demande juste de rappeler la fonction
@@ -150,8 +179,14 @@ class Timer(): # fonctionne mais en perfectionnement
         else:
             self.isFinished = True
 
+
     def getIsFinished(self):
         return self.isFinished
+
+
+
+
+
 
 
 
