@@ -8,7 +8,7 @@ Chaque frame est une classe, ce qui simplifie la programmation et la rend claire
 
 import customtkinter as ctk
 from classes_Émilie import User
-from classe_khadija import ImageConfig
+from classe_khadija import ImageConfig, Data
 
 class TitleScreen(ctk.CTkFrame):
     def __init__(self, master):
@@ -62,7 +62,7 @@ class newGameScreen(ctk.CTkFrame):
         
         # Demande à l'utilisateur l'information requise
         self.label = ctk.CTkLabel(self,text="Veuillez entrer votre nom : ")
-        self.label.pack(expand = True, pady = (0,))
+        self.label.pack(expand = True, pady = (0,40))
         self.entry = ctk.CTkEntry(self, placeholder_text= 'Écrire ici...')
         self.entry.pack(pady=10, expand = True)
 
@@ -92,8 +92,8 @@ class GameScreen(ctk.CTkFrame):
 
         # confugaration des colonnes
         self.main_container.grid_columnconfigure(0, weight=2) #gauche
-        self.main_container.grid_columnconfigure(1, weight=4) #centre
-        self.main_container.grid_columnconfigure(2, weight=1) #droite
+        self.main_container.grid_columnconfigure(1, weight=3) #centre
+        self.main_container.grid_columnconfigure(2, weight=2) #droite
         self.main_container.grid_rowconfigure(0, weight=1)
 
         # création des 3 sections
@@ -125,18 +125,8 @@ class GameScreen(ctk.CTkFrame):
 
        #Bouton retour
        self.back_btn = ctk.CTkButton(self.top_menu, text = 'Retourner au menu principal', command = self.on_return)
-       self.back_btn.pack(padx = 10, side = 'left' )
+       self.back_btn.pack(padx = (10,0), side = 'right' )
 
-        #Bouton Quitter
-       self.quit_btn = ctk.CTkButton(
-           self.top_menu, 
-           text='✕', 
-           width=30,        
-           height=30, 
-           command = self.master.destroy, 
-           fg_color='red'
-           )
-       self.quit_btn.pack(padx = (10,0), side = 'right')
 
        
        
@@ -145,34 +135,93 @@ class GameScreen(ctk.CTkFrame):
     #####################################
     def create_left_panel(self):
         #Creation du l'écran de gauche
-        self.left_panel = ctk.CTkFrame(self.main_container)
+        self.left_panel = ctk.CTkFrame(self.main_container,fg_color="#9fb498")
         self.left_panel.grid(row = 0, column = 0, sticky = 'nsew', pady = 10, padx = 10)
 
+        #--------------------------------------------
         #création du frame avec les info du joueur (nom, niveau, nmb de poissons)
-        self.user_info_frame = ctk.CTkFrame(self.left_panel,bg_color="#dee6ed", height = 50)
-        self.user_info_frame.pack(side = 'top', pady = 10, padx = 10, fill = 'x')
+        self.user_info_frame = ctk.CTkFrame(self.left_panel,fg_color="#dee6ed", height = 50)
+        self.user_info_frame.pack(side = 'top', pady = (0,10), fill = 'x')
         #montre le nom du joueur
-        self.user_name_label = ctk.CTkLabel(self.user_info_frame, text = self.master.user.getUserName())
-        self.user_name_label.pack(pady = 10, side = 'left', padx = 10)
+        self.user_name_label = ctk.CTkLabel(self.user_info_frame, text = self.master.user.getUserName(),font=("arial", 21, 'bold'))
+        self.user_name_label.pack(pady = 10, side = 'left', padx = 20)
         #montre le niveau du joueur
         self.user_level_label = ctk.CTkLabel(self.user_info_frame, text = f'Niveau : {self.master.user.getUserLevel()}')
-        self.user_level_label.pack(pady = 10,anchor = 'e', padx = 10)
+        self.user_level_label.pack(pady = 10,anchor = 'e', padx = 20)
         #montre le nmb de poissons attrape
         self.user_fish_label = ctk.CTkLabel(self.user_info_frame, text = f'Poissons : {self.master.user.getUserNbFish()}')
-        self.user_fish_label.pack(pady = 10,anchor = 'e', padx = 10)
+        self.user_fish_label.pack(pady = 10,anchor = 'e', padx = 20)
+
+        #--------------------------------------------
+        ##création du frame avec la ''librairie'' de tous les poissons qui est scrollable
+        self.gallery_frame_scroll = ctk.CTkScrollableFrame(self.left_panel,fg_color="#dee6ed")
+        self.gallery_frame_scroll.pack(side = 'top', pady = 5, fill = 'both', expand = True)
+        self.gallery_frame_scroll.grid_columnconfigure(0,weight = 1)
+        self.gallery_frame_scroll.grid_columnconfigure(1,weight = 1)
+
+        
+        current_row = 0
+        current_column = 0
+
+        self.gallery_dict = dict()
+        for i in self.master.data.getFishNameList():
+            path = f"assets\\{i}.png"
+            current_fish_image = ImageConfig(path,path,100,100)
+            current_button = ctk.CTkButton(self.gallery_frame_scroll,
+                                           image=current_fish_image.getImage(),
+                                             command = lambda i=i: self.selected_fish(i),
+                                             border_color ="#66ce7f", 
+                                             border_width=0,
+                                             text = '',
+                                             fg_color="#dee6ed",
+                                             height=100,width=100)
+            current_button.grid(pady = 5,padx = 5,
+                                row = current_row, 
+                                column = current_column)
+
+            self.gallery_dict[i] = current_button
+
+            if current_column == 0:
+                current_column = 1
+            else:
+                current_column = 0
+                current_row +=1
+
+    
+
+
+
 
 
     ###############################################
     #Colonne milieu, etang, timer, lancer la ligne#
     ###############################################
     def create_center_panel(self):
-        pass
+        self.center_panel = ctk.CTkFrame(self.main_container,fg_color="#9fb498")
+        self.center_panel.grid(row = 0, column = 1, sticky = 'nsew', pady = 10, padx = 10)
+
 
     #######################################
     #Colonne de droite, détails du poisson#
     #######################################
     def create_right_panel(self):
-        pass
+        self.right_panel = ctk.CTkFrame(self.main_container,fg_color="#dee6ed")
+        self.right_panel.grid(row = 0, column = 2, sticky = 'nsew', pady = 10, padx = 10)
+
+        label_selec = ctk.CTkLabel(self.right_panel, text = 'Sélection :')
+        label_selec.pack(pady = 5)
+
+        self.label_fish_name =ctk.CTkLabel(self.right_panel, text = "Aucun")
+        self.label_fish_name.pack(pady = 5)
+
+        fish_image = ImageConfig(r"assets\NoSelection.jpg",r"assets\NoSelection.jpg", 150,150)
+        self.label_fish_image = ctk.CTkLabel(self.right_panel, 
+                                             image=fish_image.getImage(), 
+                                             height=150, width=150, 
+                                             border_color='black', 
+                                             border_width=2,
+                                             text = '')
+        self.label_fish_image.pack(pady = 5)
 
     #######################
     #Commandes des boutons#
@@ -195,6 +244,15 @@ class GameScreen(ctk.CTkFrame):
 
     def on_cast_line(self):
         print("Lancer la ligne cliqué! (timer d'Émilie)")
+
+    def selected_fish(self,fish_name):
+            for i in self.gallery_dict.values():
+                i.configure(border_width = 0)
+            print(fish_name)
+            #ajouter une bordure verte
+            self.gallery_dict[fish_name].configure(border_width = 5)
+            ## a ajouter: right frame caracteristiques
+    
     
 
 
@@ -235,9 +293,9 @@ class MainApp(ctk.CTk):
         self.center_window()
 
         self.title("Fish le poisson")
-        #Enlever la barre de windows afin d'enelver le x
-        self.overrideredirect(True)
+
         self.user = User()
+        self.data = Data(r"assets/fishEncylopedia3.csv")
         
         self.current_frame = None
         self.show_frame(TitleScreen)
