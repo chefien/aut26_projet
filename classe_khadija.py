@@ -279,10 +279,10 @@ class GifImage(ctk.CTkFrame): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
 
 app = ctk.CTk()
 app.geometry("800x400")
-img1 = ImageConfig("assets/mainMenu.jpeg","assets/mainMenu.jpeg",50,50)
-my_label = ctk.CTkLabel(app, text="", image=img1.getImage())
-my_label.pack(pady=10)
-#fishimg = GifImage(app,"assets/fish.gif",50, 50, 100, 100, 1) # to fix the sizing
+#img1 = ImageConfig("assets/mainMenu.jpeg","assets/mainMenu.jpeg",50,50)
+#my_label = ctk.CTkLabel(app, text="", image=img1.getImage())
+#my_label.pack(pady=10)
+fishimg = GifImage(app,"assets/canvas_export-2.gif",50, 50, 100, 100, 50) # to fix the sizing
 app.mainloop()
 
 
