@@ -122,11 +122,11 @@ class SavingSystem():
                 
 class StatsPlot(ctk.CTkFrame):
     
-    def __init__(self,master,user):
+    def __init__(self,master,user,x,y):
         super().__init__(master)
-        self.fishCollected, self.trashCollected = filtrate(user)
-        self.all = enumerate(user.getUserInventory)
-        self.canvas = self.ploting()
+        self.fishCollected, self.trashCollected = self.filtrate(user)
+        self.all = len(user.getUserInventory())
+        self.canvas = self.ploting(x,y)
 
     def filtrate(self,user):
         inventory = user.getUserInventory()
@@ -150,7 +150,7 @@ class StatsPlot(ctk.CTkFrame):
     
         subplot.pie(values, labels=names, autopct = "%1.0f%%")
         subplot.set_title("Progrès de l'utilisateur")
-        canvas = FigureCanvasTkAgg(figure, master = self.master)
+        canvas = FigureCanvasTkAgg(figure, master = self)
         canvas.draw() #connects the empty space with the graph
         return canvas
         
