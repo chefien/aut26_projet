@@ -142,7 +142,7 @@ class Timer():
         self.lastSecondCounted = -1
         self.isFinished = False
         self.label = None
-
+        self.master = master
         
         self.label = ctk.CTkLabel(app, text=f"{self.seconds:02d} sec", font=("Arial", 15, "bold"), text_color="#B10E0E")
         self.label.pack(side="right", padx=10)
