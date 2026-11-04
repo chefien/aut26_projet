@@ -6,6 +6,7 @@ from classe_khadija import GifImage
 import customtkinter as ctk
 import random
 import time
+import pygame.mixer
 
 
 
@@ -95,22 +96,27 @@ class Catch():
             self.timeWaiting = 30  #(en sec)
             self.timeFishing = 60  #(en sec)
             self.clicks = 150
+
         elif self.rarity == "uncommun":
             self.timeWaiting = 60  #(en sec)
             self.timeFishing = 50  #(en sec)
             self.clicks = 155
+
         elif self.rarity == "rare":
             self.timeWaiting = 90  #(en sec)
             self.timeFishing = 40  #(en sec)
             self.clicks = 160
+
         elif self.rarity == "epic":
             self.timeWaiting = 120  #(en sec)
             self.timeFishing = 30  #(en sec)
             self.clicks = 165
+
         elif self.rarity == "legendary":
             self.timeWaiting = 150  #(en sec)
             self.timeFishing = 20  #(en sec)
             self.clicks = 170 
+
         else:
             self.timeWaiting = 0  #(en sec)
             self.timeFishing = 0  #(en sec)
@@ -149,7 +155,6 @@ class Timer():
 
 
     def updateTimerWithPrint(self):
-            
         currentTime = time.time()
             
         if currentTime < self.end:
@@ -168,7 +173,6 @@ class Timer():
 
 
     def timingWithoutPrint(self):
-
         currentTime = time.time()
 
         #si on n'est pas encore rendu à la fin, on demande juste de rappeler la fonction
@@ -178,8 +182,15 @@ class Timer():
         else:
             self.isFinished = True
 
+
     def getIsFinished(self):
         return self.isFinished
+
+
+
+
+class Sounds():
+
 
 
 
