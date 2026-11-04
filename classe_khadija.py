@@ -6,7 +6,8 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from PIL import Image  # cest une librairie qui manipule les images png, jpg etc
 from tkinter import PhotoImage
-#import classes_Émilie as em
+
+
 
 class Data():
     def __init__(self,file):
@@ -170,6 +171,7 @@ class Fishing():
         '''
         one def for the attendez, one for the click one for the finish
         '''
+        from classes_Émilie import Timer
         self.catch = catch # needs to be randomised before so you do fish(random choice of fish)
         self.clicks = None
         self.timerPassed= Timer(random.randint(0,100),0,0)
