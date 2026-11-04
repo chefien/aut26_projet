@@ -5,8 +5,9 @@ import customtkinter as ctk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from PIL import Image  # cest une librairie qui manipule les images png, jpg etc
-from tkinter import PhotoImage
-#import classes_Émilie as em
+
+
+
 
 class Data():
     def __init__(self,file):
@@ -92,6 +93,7 @@ class SavingSystem():
         self.username = user.getUserName()
         self.level = user.getUserLevel()
         self.playedBefore = False
+        self.savingToFile()
         
         #on a besoin de getters et setters:
         # getters so we can be able to read the info after
@@ -114,19 +116,41 @@ class SavingSystem():
         self.level = newLevel
     def setPlayedBefore(self,status):
         self.playedBefore = status
-        '''
+
+    def loadingFromCsv(self):
+        data = pd.read_csv("savedFile.csv")
+        self.inventory = data.loc[0,"Inventory"]
+        self.username = data.loc[0,"Username"]
+        self.level = data.loc[0,"Level"]
+        self.playedBefore = data.loc[0,"Status"]
+        return f'chargement du fichier'
+    def savingToFile(self):
+
+        data = {
+            "Inventory" : self.getInv(),
+            "Username" : self.getUsername(),
+            "Level" : self.getLevel(),
+            "Status" : self.getPlayedBefore() }
+        df = pd.DataFrame(data)
+        df.to_csv("savedFile.csv", index = False)
+
+        return f'sauvegardement du fichier'
+
+        ''' 
         what to save?
         inventory, user object, discovered fish, and statistics(for the matplot)
+        
+        i need to add saving from csv and loading from csv, so the load one will create a csv and store everything i just got and then the save will take the old csv and either overwrite (which i think is not that possible ) or it takes old,deletes it and put a new folder in its place (which is literally overwriting i just realised lmao)
         '''
 
                 
 class StatsPlot(ctk.CTkFrame):
     
-    def __init__(self,master,user):
+    def __init__(self,master,user,x,y):
         super().__init__(master)
-        self.fishCollected, self.trashCollected = filtrate(user)
-        self.all = enumerate(user.getUserInventory)
-        self.canvas = self.ploting()
+        self.fishCollected, self.trashCollected = self.filtrate(user)
+        self.all = len(user.getUserInventory())
+        self.canvas = self.ploting(x,y)
 
     def filtrate(self,user):
         inventory = user.getUserInventory()
@@ -150,7 +174,7 @@ class StatsPlot(ctk.CTkFrame):
     
         subplot.pie(values, labels=names, autopct = "%1.0f%%")
         subplot.set_title("Progrès de l'utilisateur")
-        canvas = FigureCanvasTkAgg(figure, master = self.master)
+        canvas = FigureCanvasTkAgg(figure, master = self)
         canvas.draw() #connects the empty space with the graph
         return canvas
         
@@ -170,6 +194,7 @@ class Fishing():
         '''
         one def for the attendez, one for the click one for the finish
         '''
+        from classes_Émilie import Timer
         self.catch = catch # needs to be randomised before so you do fish(random choice of fish)
         self.clicks = None
         self.timerPassed= Timer(random.randint(0,100),0,0)
@@ -260,8 +285,11 @@ class GifImage(ctk.CTkFrame): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
         openImg = Image.open(self.file)
         self.showAnim = None
         frames = openImg.n_frames #n_frames indique le nb d'image qui se trouve dans ce gif
-        img = [PhotoImage(file = self.file, format = f"gif -index {i}",master = self.master) for i in range(frames)]# par comprehension a chaque frame on call la fct et on le stock dans une liste + master cest ou il va dessiner
+        img = []
 
+        for i in range(frames):
+            openImg.seek(i)
+            img.append(ctk.CTkImage(light_image= openImg.copy(), size=(self.width, self.height)))
         gifLabel = ctk.CTkLabel(self.master, text = "",width = self.width, height = self.height) # on revient avec ctk pour que ca soit compatible
         gifLabel.place(x = self.x, y = self.y) # ou le placer
                  
@@ -277,10 +305,10 @@ class GifImage(ctk.CTkFrame): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
 
 app = ctk.CTk()
 app.geometry("800x400")
-img1 = ImageConfig("assets/mainMenu.jpeg","assets/mainMenu.jpeg",50,50)
+img1 = ImageConfig("assets/mainMenu.jpeg","assets/mainMenu.jpeg",800,400)
 my_label = ctk.CTkLabel(app, text="", image=img1.getImage())
 my_label.pack(pady=10)
-#fishimg = GifImage(app,"assets/fish.gif",50, 50, 100, 100, 1) # to fix the sizing
+fishimg = GifImage(app,"assets/ocean.gif",150, 25, 100, 25, 50) # to fix the sizing
 app.mainloop()
 
 
