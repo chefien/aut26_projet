@@ -7,8 +7,8 @@ Chaque frame est une classe, ce qui simplifie la programmation et la rend claire
 '''
 
 import customtkinter as ctk
-from classes_Émilie import User
-from classe_khadija import ImageConfig, Data
+from classes_Émilie import User, Catch
+from classe_khadija import ImageConfig, Data, GifImage
 
 class TitleScreen(ctk.CTkFrame):
     def __init__(self, master):
@@ -29,8 +29,12 @@ class TitleScreen(ctk.CTkFrame):
         #Si le jeu a deja load ou non, va etre pour l'instant juste jouer
         if self.master.user.getUserName() is not None:
             self.play_btn = ctk.CTkButton(self, text = 'Continuer', command = self.on_play, corner_radius=0)
+
+            self.new_play_btn = ctk.CTkButton(self, text = 'Nouvelle Partie', command = self.on_new_play, corner_radius=0, fg_color="#b12626")
+            self.new_play_btn.pack(pady = 10)
         else:
-            self.play_btn = ctk.CTkButton(self, text = 'Nouvelle Partie', command = self.on_new_play, corner_radius=0)
+            self.play_btn = ctk.CTkButton(self, text = 'Nouvelle Partie', command = self.on_new_play, corner_radius=0,fg_color="#b12626")
+
         self.play_btn.pack(pady = 10)
 
         #Bouton Charger
@@ -174,7 +178,9 @@ class GameScreen(ctk.CTkFrame):
                                              border_width=0,
                                              text = '',
                                              fg_color="#dee6ed",
-                                             height=100,width=100)
+                                             height=100,width=100,
+                                             hover_color="#fcf8f8",
+                                             corner_radius=0)
             current_button.grid(pady = 5,padx = 5,
                                 row = current_row, 
                                 column = current_column)
@@ -198,7 +204,31 @@ class GameScreen(ctk.CTkFrame):
     ###############################################
     def create_center_panel(self):
         self.center_panel = ctk.CTkFrame(self.main_container,fg_color="#9fb498")
-        self.center_panel.grid(row = 0, column = 1, sticky = 'nsew', pady = 10, padx = 10)
+        self.center_panel.grid(row = 0, column = 1, sticky = 'nsew', pady = 5, padx = 5)
+
+        ##header avec le nom de l'environnement
+        header_label = ctk.CTkLabel(self.center_panel, 
+                                    text= "Étang de pêche", 
+                                    font=('ariel', 15, 'bold'), 
+                                    fg_color= "#dee6ed",
+                                    corner_radius=2)
+        header_label.pack(fill = 'both',expand = True, pady = 10, padx = 15)
+
+        #NE FONCTIONNE PAS POUR L'INSTANT
+        ##le gif de l'environnement
+        #environment_gif = GifImage(self.center_panel,"assets/ocean.gif", 100, 100, 5)
+        #environment_gif.pack(pady = 5, padx = 5)
+        path = r"assets\mainMenu.jpeg"
+        environment_img = ImageConfig(path,path,360,360)
+        environment_label = ctk.CTkLabel(self.center_panel, image=environment_img.getImage(),text = '')
+        environment_label.pack()
+
+        ##bouton de pêche
+        self.fish_button = ctk.CTkButton(self.center_panel, 
+                                         text = 'Lancer la ligne', 
+                                         font = ('ariel',13, 'bold')
+                                         )
+        self.fish_button.pack(padx = 10, pady = 10,  expand = True, ipadx = 10, ipady = 10)
 
 
     #######################################
@@ -238,6 +268,8 @@ class GameScreen(ctk.CTkFrame):
         self.inventory_frame_scroll = ctk.CTkScrollableFrame(self.right_panel)
         self.inventory_frame_scroll.pack(pady=5, padx = 10, expand = True, fill = 'both')
 
+        
+
 
     #######################
     #Commandes des boutons#
@@ -269,7 +301,10 @@ class GameScreen(ctk.CTkFrame):
             self.gallery_dict[fish_name].configure(border_width = 5)
             #modification du right panel
             self.modify_desc_fish(fish_name)
-
+            #modification 
+            #contenu inventaire
+            self.modify_inventory_list(fish_name)
+            
     def modify_desc_fish(self, fish_name):
         self.label_fish_name.configure(text = fish_name)
 
@@ -282,6 +317,29 @@ class GameScreen(ctk.CTkFrame):
         path = f"assets/{fish_name}.png"
         fish_image = ImageConfig(path,path, 150,150)
         self.label_fish_image.configure(image = fish_image.getImage())
+
+    def modify_inventory_list(self, fish_name):
+
+        #nettoie toute l'information qu'il y avait avant
+        for widget in self.inventory_frame_scroll.winfo_children():
+            widget.destroy()
+        #on ajoute les bonnes informations (les poissons)
+        for x in self.master.user.inventory:
+                if x.name == fish_name:
+                    label = ctk.CTkLabel(self.inventory_frame_scroll, text = f"• {x.size} cm, {x.weight} kg")
+                    label.pack(pady = 5, padx = 10, anchor = 'w')
+
+    def on_fishing(self):
+        #Il existe 3 phases de la mécanique du jeu:
+
+        #LANCER LA LIGNE#
+
+        #genere un catch
+        self.current_catch = Catch(self.master.data)
+        #change le text pour montrer que le joueur est en attente d'un poisson
+        self.fish_button.configure(text = "Patientez...", state = 'disabled')
+        #on attend un certain moment
+        wait_time = self.current_catch.
     
     
 
