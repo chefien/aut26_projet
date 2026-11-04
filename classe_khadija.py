@@ -115,9 +115,11 @@ class SavingSystem():
         self.level = newLevel
     def setPlayedBefore(self,status):
         self.playedBefore = status
-        '''
+        ''' 
         what to save?
         inventory, user object, discovered fish, and statistics(for the matplot)
+        
+        i need to add saving from csv and loading from csv, so the load one will create a csv and store everything i just got and then the save will take the old csv and either overwrite (which i think is not that possible ) or it takes old,deletes it and put a new folder in its place (which is literally overwriting i just realised lmao)
         '''
 
                 
@@ -279,10 +281,10 @@ class GifImage(ctk.CTkFrame): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
 
 app = ctk.CTk()
 app.geometry("800x400")
-#img1 = ImageConfig("assets/mainMenu.jpeg","assets/mainMenu.jpeg",50,50)
-#my_label = ctk.CTkLabel(app, text="", image=img1.getImage())
-#my_label.pack(pady=10)
-fishimg = GifImage(app,"assets/canvas_export-2.gif",50, 50, 100, 100, 50) # to fix the sizing
+img1 = ImageConfig("assets/mainMenu.jpeg","assets/mainMenu.jpeg",800,400)
+my_label = ctk.CTkLabel(app, text="", image=img1.getImage())
+my_label.pack(pady=10)
+fishimg = GifImage(app,"assets/canvas_export-4.gif",50, 50, 100, 100, 50) # to fix the sizing
 app.mainloop()
 
 
