@@ -93,6 +93,7 @@ class SavingSystem():
         self.username = user.getUserName()
         self.level = user.getUserLevel()
         self.playedBefore = False
+        self.savingToFile()
         
         #on a besoin de getters et setters:
         # getters so we can be able to read the info after
@@ -115,6 +116,26 @@ class SavingSystem():
         self.level = newLevel
     def setPlayedBefore(self,status):
         self.playedBefore = status
+
+    def loadingFromCsv(self):
+        data = pd.read_csv("savedFile.csv")
+        self.inventory = data.loc[0,"Inventory"]
+        self.username = data.loc[0,"Username"]
+        self.level = data.loc[0,"Level"]
+        self.playedBefore = data.loc[0,"Status"]
+        return f'chargement du fichier'
+    def savingToFile(self):
+
+        data = {
+            "Inventory" : self.getInv(),
+            "Username" : self.getUsername(),
+            "Level" : self.getLevel(),
+            "Status" : self.getPlayedBefore() }
+        df = pd.DataFrame(data)
+        df.to_csv("savedFile.csv", index = False)
+
+        return f'sauvegardement du fichier'
+
         ''' 
         what to save?
         inventory, user object, discovered fish, and statistics(for the matplot)
