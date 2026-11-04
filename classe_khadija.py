@@ -86,13 +86,14 @@ class Data():
         return self.trash[name] #retourne les stats du dechets dans un dictionnaire
         
 class SavingSystem():
-    def __init__(self, user):
+    def __init__(self, user,file):
      # à revoir faut mettre tous les attributs to save! (for loading/ pour chaque partie)
         #on save ca pour la premiere fois
         self.inventory = user.getUserInventory()
         self.username = user.getUserName()
         self.level = user.getUserLevel()
         self.playedBefore = False
+        self.file = file
         self.savingToFile()
         
         #on a besoin de getters et setters:
@@ -104,7 +105,7 @@ class SavingSystem():
     def getLevel(self):
         return self.level
     def getPlayedBefore(self):
-        return self.getPlayedBefore
+        return self.playedBefore()
     
         # setters so we can be able to save stuff
     
@@ -117,22 +118,27 @@ class SavingSystem():
     def setPlayedBefore(self,status):
         self.playedBefore = status
 
-    def loadingFromCsv(self):
-        data = pd.read_csv("savedFile.csv")
+    def loadingFromCsv(self,file):
+        try:
+            data = pd.read_csv(f"{file}.csv")
+        except Exception as e:
+            print(e)
+            return
+        
         self.inventory = data.loc[0,"Inventory"]
         self.username = data.loc[0,"Username"]
         self.level = data.loc[0,"Level"]
         self.playedBefore = data.loc[0,"Status"]
         return f'chargement du fichier'
     def savingToFile(self):
-
+    # tu vas devoir set avant de sauvegarder un fichier
         data = {
             "Inventory" : self.getInv(),
             "Username" : self.getUsername(),
             "Level" : self.getLevel(),
             "Status" : self.getPlayedBefore() }
         df = pd.DataFrame(data)
-        df.to_csv("savedFile.csv", index = False)
+        df.to_csv(f"{self.file}.csv", index = False)
 
         return f'sauvegardement du fichier'
 
