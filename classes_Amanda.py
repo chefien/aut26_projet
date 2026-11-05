@@ -237,8 +237,8 @@ class GameScreen(ctk.CTkFrame):
         #environment_gif.pack(pady = 5, padx = 5)
         path = r"assets/mainMenu.jpeg"
         environment_img = ImageConfig(path,path,360,360)
-        environment_label = ctk.CTkLabel(self.center_panel, image=environment_img.getImage(),text = '')
-        environment_label.pack()
+        self.environment_label = ctk.CTkLabel(self.center_panel, image=environment_img.getImage(),text = '')
+        self.environment_label.pack()
         ##bar de progression
         self.reel_bar = ctk.CTkProgressBar(
                                             self.center_panel, 
@@ -287,14 +287,18 @@ class GameScreen(ctk.CTkFrame):
         self.label_fish_name =ctk.CTkLabel(self.right_panel, text = "Aucun")
         self.label_fish_name.pack(pady = 5)
 
-        fish_image = ImageConfig(r"assets/NoSelection.jpg",r"assets/NoSelection.jpg", 150,150)
-        self.label_fish_image = ctk.CTkLabel(self.right_panel, 
-                                             image=fish_image.getImage(), 
+        self.frame_fish_image = ctk.CTkFrame(self.right_panel, 
                                              height=150, width=150, 
                                              border_color="#000000", 
                                              border_width=2,
+                                             corner_radius=0)
+        self.frame_fish_image.pack(pady = 5)
+
+        fish_image = ImageConfig(r"assets/NoSelection.jpg",r"assets/NoSelection.jpg", 150,150)
+        self.label_fish_image = ctk.CTkLabel(self.frame_fish_image, 
+                                             image=fish_image.getImage(),
                                              text = '')
-        self.label_fish_image.pack(pady = 5)
+        self.label_fish_image.pack(anchor = 'center',padx = 2, pady = 2)
 
         self.label_rarity = ctk.CTkLabel(self.right_panel,text = 'N/A')
         self.label_rarity.pack(pady = 5)
@@ -507,12 +511,30 @@ class GameScreen(ctk.CTkFrame):
             
             if self.current_catch.isFish:
                 self.fish_button.configure(text = f"Poisson attrapé!\n{self.current_catch.name}",fg_color="#69F0C1")
+                self.show_catched_fish()
             else:
-                self.fish_button.configure(text = f"Déchet repêché...\n{self.current_catch.name}", fg_color="#A5A50A")
+                self.fish_button.configure(text = f"Déchet repêché...\n{self.current_catch.name}", fg_color="#949A31")
             self.after(3*1000, self.normal_fish_button)
             
 
             
+    def show_catched_fish(self):
+        show_fish_frame = ctk.CTkFrame(self.center_panel,
+                                       height=200,width=200,
+                                        border_color="#FFFFFF",
+                                        border_width=5,
+                                       corner_radius=0)
+        
+        show_fish_frame.place(relx=0.5, rely=0.42, anchor='center')
+
+        path = f"assets/{self.current_catch.name}.png"
+        current_fish_image = ImageConfig(path,path,200,200) 
+        show_fish_label = ctk.CTkLabel(show_fish_frame,
+                                       image = current_fish_image.getImage(),
+                                       text = '')
+        show_fish_label.pack(anchor = 'center', padx = 5, pady = 5)
+
+        self.after(3*1000, show_fish_frame.place_forget) 
 
     def on_escaped(self):
         if self.temp_clicks_needed>self.temp_clicks:
