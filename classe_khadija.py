@@ -86,7 +86,8 @@ class Data():
         return self.trash[name] #retourne les stats du dechets dans un dictionnaire
         
 class SavingSystem():
-    def __init__(self, user,file):
+    def __init__(self, user,file,data):
+        
      # à revoir faut mettre tous les attributs to save! (for loading/ pour chaque partie)
         #on save ca pour la premiere fois
         self.inventory = user.getUserInventory()
@@ -122,13 +123,25 @@ class SavingSystem():
         self.playedBefore = status
 
     def loadingFromCsv(self,file):
+        from classes_Émilie import Catch
         try:
             data = pd.read_csv(file)
         except Exception as e:
             print(e)
             return
+        tempInv = []
+        for i in data:
+            catchTemp = Catch(self.data)
+            catchTemp.setName(data.loc[0,"Name"])
+            catchTemp.setWeight(data.loc[0,"Weight"])
+            catchTemp.setSize(data.loc[0,"Size"])
+            catchTemp.setIsFish(data.loc[0,"IsFish"])
+            catchTemp.setDescription(data.loc[0,"Description"])
+            catchTemp.setRarity(data.loc[0,"Rarity"])
+            catchTemp.setTimeFishing(data.loc[0,"TimeFishing"])
+            tempInv.append(catchTemp)
+                    
         
-        self.inventory = data.loc[0,"Inventory"]
         self.username = data.loc[0,"Username"]
         self.level = data.loc[0,"Level"]
         self.playedBefore = data.loc[0,"Status"]
