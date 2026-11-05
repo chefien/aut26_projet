@@ -95,6 +95,8 @@ class SavingSystem():
         self.level = user.getUserLevel()
         self.playedBefore = False
         self.file = file
+        self.user = user
+        self.data = data
         
         
         #on a besoin de getters et setters:
@@ -112,39 +114,39 @@ class SavingSystem():
     
     def setInv(self,newInventory):
         self.inventory = newInventory
-        self.user.setInventory = self.inventory
+        self.user.setUserInventory(self.inventory)
     def setUsername(self, newUsername):
         self.username = newUsername
-        self.user.setUsername = self.username
+        self.user.setUserName(self.username)
     def setLevel(self, newLevel):
         self.level = newLevel
-        self.user.setLevel = self.Level
+        self.user.setUserLevel(self.level)
     def setPlayedBefore(self,status):
         self.playedBefore = status
 
     def loadingFromCsv(self,file):
         from classes_Émilie import Catch
         try:
-            data = pd.read_csv(file)
+            df = pd.read_csv(file)
         except Exception as e:
             print(e)
             return
         tempInv = []
-        for i in data:
+        for i in range(len(df)):
             catchTemp = Catch(self.data)
-            catchTemp.setName(data.loc[i,"Name"])
-            catchTemp.setWeight(data.loc[i,"Weight"])
-            catchTemp.setSize(data.loc[i,"Size"])
-            catchTemp.setIsFish(data.loc[i,"IsFish"])
-            catchTemp.setDescription(data.loc[i,"Description"])
-            catchTemp.setRarity(data.loc[i,"Rarity"])
-            catchTemp.setTimeFishing(data.loc[i,"TimeFishing"])
+            catchTemp.setName(df.loc[i,"Name"])
+            catchTemp.setWeight(df.loc[i,"Weight"])
+            catchTemp.setSize(df.loc[i,"Size"])
+            catchTemp.setIsFish(df.loc[i,"IsFish"])
+            catchTemp.setDescription(df.loc[i,"Description"])
+            catchTemp.setRarity(df.loc[i,"Rarity"])
+            catchTemp.setTimeFishing(df.loc[i,"TimeFishing"])
             tempInv.append(catchTemp)
         self.inventory = tempInv           
         
-        self.username = data.loc[0,"Username"]
-        self.level = data.loc[0,"Level"]
-        self.playedBefore = data.loc[0,"Status"]
+        self.username = df.loc[0,"Username"]
+        self.level = df.loc[0,"Level"]
+        self.playedBefore = df.loc[0,"Status"]
         return f'chargement du fichier'
     def savingToFile(self):
     # tu vas devoir set avant de sauvegarder un fichier
@@ -156,9 +158,9 @@ class SavingSystem():
             "Description" : [i.getDescription() for i in self.getInv()],
             "Rarity" : [i.getRarity() for i in self.getInv()],
             "TimeFishing" : [i.getTimeFishing() for i in self.getInv()],
-            "Username" : self.getUsername(),
-            "Level" : self.getLevel(),
-            "Status" : self.getPlayedBefore() }
+            "Username" : [self.getUsername()] * len(self.getInv()),
+            "Level" : [self.getLevel()] * len(self.getInv()),
+            "Status" : [self.getPlayedBefore()] * len(self.getInv()) }
         df = pd.DataFrame(data)
         df.to_csv(self.file, index = False)
 
