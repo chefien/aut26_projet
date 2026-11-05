@@ -148,7 +148,7 @@ class GameScreen(ctk.CTkFrame):
         self.user_info_frame = ctk.CTkFrame(self.left_panel,fg_color="#dee6ed", height = 50)
         self.user_info_frame.pack(side = 'top', pady = (0,10), fill = 'x')
         #montre le nom du joueur
-        self.user_name_label = ctk.CTkLabel(self.user_info_frame, text = self.master.user.getUserName(),font=("arial", 21, 'bold'))
+        self.user_name_label = ctk.CTkLabel(self.user_info_frame, text = self.master.user.getUserName(),font=("arial", 21, 'bold'), wraplength=200)
         self.user_name_label.pack(pady = 10, side = 'left', padx = 20)
         #montre le niveau du joueur
         self.user_level_label = ctk.CTkLabel(self.user_info_frame, text = f'Niveau : {self.master.user.getUserLevel()}')
@@ -562,20 +562,75 @@ class GameScreen(ctk.CTkFrame):
 
 class CreditScreen(ctk.CTkFrame):
     def __init__(self,master):
+
         super().__init__(master)
 
-        self.label = ctk.CTkLabel(self, text = 'Crédits', font = ('ariel', 24, 'bold'))
-        self.label.pack(pady = 30)
+        self.scroll_frame = ctk.CTkScrollableFrame(self)
+        self.scroll_frame.pack(expand = True, fill = 'both')
+
+        self.label = ctk.CTkLabel(self.scroll_frame, text = 'Crédits', font = ('ariel', 24, 'bold'))
+        self.label.pack(pady = 20)
+
+        
+        by_label = ctk.CTkLabel(
+            self.scroll_frame, 
+            text="Projet créé par :", 
+            font=("arial", 16, 'bold')
+        )
+        by_label.pack(pady=10)
 
         self.names = ctk.CTkLabel(
-            self, 
-            text="Projet créé par :\n- Amanda\n- Khadija\n- Émilie", 
+            self.scroll_frame, 
+            text="Amanda Lidia Pulache,\nKhadija Abid et\nÉmilie Ouellet", 
             font=("arial", 16)
         )
-        self.names.pack(pady=20)
+        self.names.pack(pady=10)
+        context_label = ctk.CTkLabel(
+            self.scroll_frame, 
+            text="Dans le contexte du cours", 
+            font=("arial", 16, 'bold')
+        )
+        context_label.pack(pady=10)
+
+        context_info_label = ctk.CTkLabel(
+            self.scroll_frame, 
+            text="420-SF3-RE\nDÉVELOPPEMENT D'APPLICATIONS DANS\nUN ENVIRONNEMENT GRAPHIQUE\ngroupe 02231", 
+            font=("arial", 16)
+        )
+        context_info_label.pack(pady=10)
+
+        due_label = ctk.CTkLabel(
+            self.scroll_frame, 
+            text="Pour", 
+            font=("arial", 16, 'bold')
+        )
+        due_label.pack(pady=10)
+
+        due_info_label = ctk.CTkLabel(
+            self.scroll_frame, 
+            text="Ala Antabli\n16 novembre 2026", 
+            font=("arial", 16)
+        )
+        due_info_label.pack(pady=10)
+
+        source_label = ctk.CTkLabel(
+            self.scroll_frame, 
+            text=". . .\n\nSources:", 
+            font=("arial", 16, 'italic')
+        )
+        source_label.pack(pady=10)
+
+        sources_name_label = ctk.CTkLabel(
+            self.scroll_frame, 
+            text="- Wikipedia", 
+            font=("arial", 16)
+        )
+        sources_name_label.pack(pady=10)
+
+        
 
         # Bouton pour revenir au menu principal
-        self.back_btn = ctk.CTkButton(self, text="Retour", command=self.back)
+        self.back_btn = ctk.CTkButton(self.scroll_frame, text="Retour", command=self.back)
         self.back_btn.pack(pady=20)
 
     def back(self):
