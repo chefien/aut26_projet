@@ -178,7 +178,25 @@ class Catch():
             self.clicks = 0     
 
         
-    #getters (en faire pour absolument tout)
+    #getters
+    def getName(self):
+        return self.name
+    
+    def getWeight(self):
+        return self.weight
+    
+    def getSize(self):
+        return self.size
+    
+    def getIsFish(self):
+        return self.isFish
+    
+    def getDescription(self):
+        return self.description
+    
+    def getRarity(self):
+        return self.rarity
+    
     def getTimeWaiting(self):
         return self.timeWaiting
 
