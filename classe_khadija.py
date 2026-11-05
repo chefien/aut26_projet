@@ -132,15 +132,15 @@ class SavingSystem():
         tempInv = []
         for i in data:
             catchTemp = Catch(self.data)
-            catchTemp.setName(data.loc[0,"Name"])
-            catchTemp.setWeight(data.loc[0,"Weight"])
-            catchTemp.setSize(data.loc[0,"Size"])
-            catchTemp.setIsFish(data.loc[0,"IsFish"])
-            catchTemp.setDescription(data.loc[0,"Description"])
-            catchTemp.setRarity(data.loc[0,"Rarity"])
-            catchTemp.setTimeFishing(data.loc[0,"TimeFishing"])
+            catchTemp.setName(data.loc[i,"Name"])
+            catchTemp.setWeight(data.loc[i,"Weight"])
+            catchTemp.setSize(data.loc[i,"Size"])
+            catchTemp.setIsFish(data.loc[i,"IsFish"])
+            catchTemp.setDescription(data.loc[i,"Description"])
+            catchTemp.setRarity(data.loc[i,"Rarity"])
+            catchTemp.setTimeFishing(data.loc[i,"TimeFishing"])
             tempInv.append(catchTemp)
-                    
+        self.inventory = tempInv           
         
         self.username = data.loc[0,"Username"]
         self.level = data.loc[0,"Level"]
