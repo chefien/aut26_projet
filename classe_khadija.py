@@ -94,7 +94,7 @@ class SavingSystem():
         self.level = user.getUserLevel()
         self.playedBefore = False
         self.file = file
-        self.savingToFile()
+        
         
         #on a besoin de getters et setters:
         # getters so we can be able to read the info after
@@ -105,22 +105,25 @@ class SavingSystem():
     def getLevel(self):
         return self.level
     def getPlayedBefore(self):
-        return self.playedBefore()
+        return self.playedBefore
     
         # setters so we can be able to save stuff
     
     def setInv(self,newInventory):
         self.inventory = newInventory
+        self.user.setInventory = self.inventory
     def setUsername(self, newUsername):
         self.username = newUsername
+        self.user.setUsername = self.username
     def setLevel(self, newLevel):
         self.level = newLevel
+        self.user.setLevel = self.Level
     def setPlayedBefore(self,status):
         self.playedBefore = status
 
     def loadingFromCsv(self,file):
         try:
-            data = pd.read_csv(f"{file}.csv")
+            data = pd.read_csv(file)
         except Exception as e:
             print(e)
             return
@@ -133,12 +136,18 @@ class SavingSystem():
     def savingToFile(self):
     # tu vas devoir set avant de sauvegarder un fichier
         data = {
-            "Inventory" : self.getInv(),
+            "Name" : [i.getName() for i in self.getInv()],# catch name
+            "Weight" : [i.getWeight() for i in self.getInv()],
+            "Size" : [i.getSize() for i in self.getInv()],
+            "IsFish" : [i.getIsFish() for i in self.getInv()],
+            "Description" : [i.getDescription() for i in self.getInv()],
+            "Rarity" : [i.getRarity() for i in self.getInv()],
+            "TimeFishing" : [i.getTimeFishing() for i in self.getInv()],
             "Username" : self.getUsername(),
             "Level" : self.getLevel(),
             "Status" : self.getPlayedBefore() }
         df = pd.DataFrame(data)
-        df.to_csv(f"{self.file}.csv", index = False)
+        df.to_csv(self.file, index = False)
 
         return f'sauvegardement du fichier'
 
