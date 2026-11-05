@@ -260,13 +260,15 @@ class GameScreen(ctk.CTkFrame):
                                          width=220,
                                          corner_radius=20,
                                          fg_color="#dee6ed",
-                                         text_color="#000000"
+                                         text_color="#000000",
+                                         text_color_disabled="#000000"
                                          )
         self.fish_button.pack(padx = 10, 
                               pady = 10,
                               expand = True, 
                               ipadx = 10, 
                               ipady = 10)
+        self.fishing_timer = None
 
         
         
@@ -436,12 +438,8 @@ class GameScreen(ctk.CTkFrame):
         self.fish_button.configure(text = "Patientez...", state = 'disabled')
         #on attend un certain moment
 
-        '''
-        La logique serait dependant de rareté du poisson, mais pas encore implémenté
-        wait_time = self.current_catch.rarity.seconds
-        je vais mettre 5 secondes pour l'instant
-        '''
-
+        if self.fishing_timer != None:
+            self.fishing_timer.autoDestruct()
         self.fishing_timer = None
 
         sec = self.current_catch.getTimeWaiting()
@@ -460,8 +458,7 @@ class GameScreen(ctk.CTkFrame):
     def start_bite(self):
   
 
-        if self.fishing_timer != None:
-            self.fishing_timer.autoDestruct()
+        
 
         sec_to_catch = self.current_catch.getTimeFishing()
         self.fishing_timer = Timer(self.header_frame,sec_to_catch)
