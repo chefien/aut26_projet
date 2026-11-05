@@ -177,6 +177,36 @@ class Catch():
             
             self.clicks = 0     
 
+
+    #setters
+    def setName(self, name):
+        self.name = name
+
+    def setWeight(self, weight):
+        self.weight = weight
+
+    def setSize(self, size):
+        self.size = size
+
+    def setIsFish(self, isFish):
+        self.isFish = isFish
+
+    def setDescritpion(self, description):
+        self.description = description
+
+    def setRarity(self, rarity):
+        self.rarity = rarity
+
+    def setTimeWaiting(self, timeWaiting):
+        self.timeWaiting = timeWaiting
+
+    def setTimeFishing(self, timeFishing):
+        self.timeFishing = timeFishing
+
+    def setNbClicks(self, nbClicks):
+        self.getNbClicks = nbClicks
+
+
         
     #getters
     def getName(self):
