@@ -586,7 +586,8 @@ class MainApp(ctk.CTk):
 
         
 
-    ##temp
+'''    ##temp
 app = MainApp()
 if __name__ == "__main__":
     app.mainloop()
+'''
