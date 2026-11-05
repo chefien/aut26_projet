@@ -191,7 +191,7 @@ class Catch():
     def setIsFish(self, isFish):
         self.isFish = isFish
 
-    def setDescritpion(self, description):
+    def setDescription(self, description):
         self.description = description
 
     def setRarity(self, rarity):
