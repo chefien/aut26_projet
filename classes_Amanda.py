@@ -239,7 +239,18 @@ class GameScreen(ctk.CTkFrame):
         environment_img = ImageConfig(path,path,360,360)
         environment_label = ctk.CTkLabel(self.center_panel, image=environment_img.getImage(),text = '')
         environment_label.pack()
-
+        ##bar de progression
+        self.reel_bar = ctk.CTkProgressBar(
+                                            self.center_panel, 
+                                            width=220, 
+                                            height=14, 
+                                            corner_radius=0,
+                                            fg_color="#dee6ed",         
+                                            progress_color="#66ce7f"  
+                                        )
+        self.reel_bar.pack(padx = 10, 
+                            pady = 10)
+        self.reel_bar.set(0)
         ##bouton de pêche
         self.fish_button = ctk.CTkButton(self.center_panel, 
                                          text = 'Lancer la ligne', 
@@ -256,6 +267,9 @@ class GameScreen(ctk.CTkFrame):
                               expand = True, 
                               ipadx = 10, 
                               ipady = 10)
+
+        
+        
 
 
     #######################################
@@ -435,13 +449,17 @@ class GameScreen(ctk.CTkFrame):
         self.temp_clicks_needed = self.current_catch.getNbClicks()
         self.temp_clicks = 0
 
+        
+
         ##############################
         #CLIQUER RAPIDEMENT (CA MORD)#
         ##############################
-
+        
         self.after(wait_time, self.start_bite)
 
     def start_bite(self):
+  
+
         if self.fishing_timer != None:
             self.fishing_timer.autoDestruct()
 
@@ -456,10 +474,14 @@ class GameScreen(ctk.CTkFrame):
 
 
     def on_reel_click(self):
+
         #augmente les clicks
         self.temp_clicks+=1
         #update le visuel
         self.fish_button.configure(text = f"({self.temp_clicks_needed - self.temp_clicks} clics restants)")
+        
+        ratio = self.temp_clicks / self.temp_clicks_needed
+        self.reel_bar.set(ratio)  
         #check si le joueur a réussi
         if self.temp_clicks >= self.temp_clicks_needed:
             
@@ -509,7 +531,8 @@ class GameScreen(ctk.CTkFrame):
                                     font = ('ariel',13, 'bold'),
                                     command = self.on_fishing,
                                     state = 'normal',
-                                    fg_color="#dee6ed",)
+                                    fg_color="#dee6ed")
+        self.reel_bar.set(0)
         
 
                     
@@ -549,6 +572,7 @@ class MainApp(ctk.CTk):
     def __init__(self):
         #j'initialise mes attributs et je créer la fenêtre
         super().__init__()
+        ctk.set_appearance_mode("Light")
 
         self.window_width = 1000
         self.window_height = 600
