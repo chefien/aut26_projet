@@ -249,7 +249,8 @@ class GameScreen(ctk.CTkFrame):
                                          width=220,
                                          corner_radius=20,
                                          fg_color="#dee6ed",
-                                         text_color="black")
+                                         text_color="#000000"
+                                         )
         self.fish_button.pack(padx = 10, 
                               pady = 10,
                               expand = True, 
@@ -274,7 +275,7 @@ class GameScreen(ctk.CTkFrame):
         self.label_fish_image = ctk.CTkLabel(self.right_panel, 
                                              image=fish_image.getImage(), 
                                              height=150, width=150, 
-                                             border_color='black', 
+                                             border_color="#000000", 
                                              border_width=2,
                                              text = '')
         self.label_fish_image.pack(pady = 5)
@@ -484,7 +485,11 @@ class GameScreen(ctk.CTkFrame):
                 self.modify_inventory_list(self.current_catch.name)
 
             #on retourne au bouton initial
-            self.fish_button.configure(text = f"Poisson attrapé!\n{self.current_catch.name}")
+            
+            if self.current_catch.isFish:
+                self.fish_button.configure(text = f"Poisson attrapé!\n{self.current_catch.name}",fg_color="#69F0C1")
+            else:
+                self.fish_button.configure(text = f"Déchet repêché...\n{self.current_catch.name}", fg_color="#A5A50A")
             self.after(3*1000, self.normal_fish_button)
             
 
@@ -503,7 +508,8 @@ class GameScreen(ctk.CTkFrame):
         self.fish_button.configure(text = 'Lancer la ligne', 
                                     font = ('ariel',13, 'bold'),
                                     command = self.on_fishing,
-                                    state = 'normal')
+                                    state = 'normal',
+                                    fg_color="#dee6ed",)
         
 
                     
