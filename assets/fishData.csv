@@ -1,0 +1,39 @@
+name;startWeight;finishWeight;startSize;finishSize;isFish;description;rarity
+Doré jaune;0.6;4.5;30;75;TRUE;Longévité : 15 ans, Régime : Carnivore, Statut : Préoccupation mineure;common
+Grand brochet;1;8;45;100;TRUE;Longévité : 15 ans, Régime : Carnivore, Statut : Préoccupation mineure;common
+Achigan à petite bouche;0.4;2.2;20;48;TRUE;Longévité : 15 ans, Régime : Carnivore, Statut : Préoccupation mineure;common
+Perchaude;0.1;0.6;12;30;TRUE;Longévité : 10 ans, Régime : Carnivore, Statut : Préoccupation mineure;uncommon
+Crapet-soleil;0.08;0.35;10;22;TRUE;Longévité : 10 ans, Régime : Carnivore, Statut : Préoccupation mineure;uncommon
+Crapet arlequin;0.1;0.6;12;25;TRUE;Longévité : 10 ans, Régime : Omnivore, Statut : Préoccupation mineure;common
+Crapet de roche;0.1;0.5;12;25;TRUE;Longévité : 8 ans, Régime : Carnivore, Statut : Préoccupation mineure;common
+Esturgeon de Sibérie;8;35;80;150;TRUE;Longévité : 60 ans, Régime : Carnivore benthique, Statut : En danger critique d'extinction;legendary
+Mbaraga;1.5;4;35;60;TRUE;Longévité : 10 ans, Régime : Omnivore à tendance alguivore, Statut : Préoccupation mineure;uncommon
+Altolamprologus calvus;0.02;0.08;7;13;TRUE;Longévité : 10 ans, Régime : Carnivore, Statut : Quasi menacée;rare
+Poisson-chat;0.3;2;20;45;TRUE;Longévité : 10 ans, Régime : Omnivore, Statut : Préoccupation mineure;common
+Citrinellum;0.3;1.2;15;28;TRUE;Longévité : 12 ans, Régime : Omnivore à tendance carnivore, Statut : Préoccupation mineure;uncommon
+Amphilophus labiatus;0.3;1;18;30;TRUE;Longévité : 10 ans, Régime : Omnivore, Statut : Non évalué;rare
+Amphilophus xiloaensis;0.1;0.5;12;22;TRUE;Longévité : 8 ans, Régime : Omnivore, Statut : Vulnérable;epic
+Killi géant d'Anatolie;0.002;0.006;3.5;5.6;TRUE;Longévité : 4 ans, Régime : Carnivore, Statut : Quasi menacée;rare
+Anguille;0.5;3.5;45;100;TRUE;Longévité : 20 ans, Régime : Carnivore, Statut : En danger critique d'extinction;legendary
+Garpique alligator;25;90;120;220;TRUE;Longévité : 30 ans, Régime : Carnivore, Statut : Préoccupation mineure;uncommon
+Baenchi;0.03;0.08;8;13;TRUE;Longévité : 8 ans, Régime : Carnivore microbenthique, Statut : En danger critique d'extinction;legendary
+Aulonocara stuartgranti;0.03;0.09;8;14;TRUE;Longévité : 8 ans, Régime : Carnivore microbenthique, Statut : Préoccupation mineure;epic
+Benthochromis tricoti;0.05;0.15;12;18;TRUE;Longévité : 8 ans, Régime : Planctophage, Statut : Préoccupation mineure;uncommon
+Poisson rouge;0.1;1.2;12;30;TRUE;Longévité : 20 ans, Régime : Omnivore, Statut : Préoccupation mineure;common
+Démasoni;0.015;0.04;5;8;TRUE;Longévité : 5 ans, Régime : Alguivore, Statut : Vulnérable;rare
+Loche de rivière;0.005;0.02;6;12;TRUE;Longévité : 5 ans, Régime : Carnivore benthique, Statut : Préoccupation mineure;common
+Poisson-arc-en-ciel rouge;0.02;0.06;8;14;TRUE;Longévité : 7 ans, Régime : Omnivore, Statut : En danger;epic
+Clés;0.03;0.08;5;10;FALSE;Peut-être que tu pourras ouvrir quelque chose avec.;rare
+Casquette;0.07;0.12;18;26;FALSE;Huh, c'est bizarre...;epic
+Montre de poche;0.06;0.15;4.5;6.5;FALSE;Très sophistiquée.;legendary
+Sac-en-plastique;0.005;0.02;30;50;FALSE;Il y en a partout, malheureusement.;common
+Algues;0.05;0.4;15;60;FALSE;C'est bon pour l'écosystème.;common
+Branche d'arbre;0.3;2.5;25;100;FALSE;Il en faudra beaucoup pour faire un feu de camp.;common
+Botte;0.5;1.4;25;38;FALSE;Un peu trop grande pour toi.;uncommon
+couteau;0.08;0.25;15;25;FALSE;Étrange...;rare
+disque de CD;0.015;0.02;12;12;FALSE;Je ne pense pas qu'il fonctionne encore.;uncommon
+bouteille;0.02;0.05;20;30;FALSE;Remplie d'eau de lac... Miam !;uncommon
+Corde;0.2;0.8;150;350;FALSE;Hyper longue... Peut-être pour ton bateau imaginaire.;common
+T-shirt;0.12;0.22;60;75;FALSE;Un peu démodé.;rare
+Écran solaire;0.1;0.25;12;18;FALSE;Je pense que tu as déjà un coup de soleil...;epic
+peluche;0.08;0.35;15;25;FALSE;Ça me rappelle mon enfance...;legendary

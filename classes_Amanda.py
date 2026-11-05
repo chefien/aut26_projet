@@ -8,7 +8,7 @@ Chaque frame est une classe, ce qui simplifie la programmation et la rend claire
 
 import customtkinter as ctk
 from classes_Émilie import User, Catch, Timer
-from classe_khadija import ImageConfig, Data, GifImage
+from classe_khadija import ImageConfig, Data, GifImage, SavingSystem
 from PIL import Image, ImageEnhance
 
 class TitleScreen(ctk.CTkFrame):
@@ -294,6 +294,8 @@ class GameScreen(ctk.CTkFrame):
         self.inventory_frame_scroll = ctk.CTkScrollableFrame(self.right_panel)
         self.inventory_frame_scroll.pack(pady=5, padx = 10, expand = True, fill = 'both')
 
+        self.current_selected_name = None
+
         
 
 
@@ -301,6 +303,10 @@ class GameScreen(ctk.CTkFrame):
     #Commandes des boutons#
     #######################
     def on_load(self):
+        path = ctk.filedialog.askopenfilename(initialdir= "saves")
+        #self.saving_system = SavingSystem(self.master.user, path)
+        #self.saving_system.loadingFromCsv(path)
+        
         print("Bouton charger cliqué")
 
     def on_save(self):
@@ -310,7 +316,21 @@ class GameScreen(ctk.CTkFrame):
         print("Bouton options cliqué")
 
     def on_stats(self):
-        print("Bouton stats cliqué")
+
+        self.stats_btn.configure(text = 'Retourner', command = self.on_return_fishing)
+
+        self.stats_container = ctk.CTkFrame(self, fg_color="#9fb498")
+        self.main_container.pack_forget()
+        self.stats_container.pack(expand=True, fill="both", padx=10, pady=5)
+
+
+    
+
+    def on_return_fishing(self):
+        self.stats_container.pack_forget()
+        self.stats_btn.configure(text = 'Statistiques du jeu', command = self.on_stats)
+
+        self.main_container.pack(expand=True, fill="both", padx=10, pady=5)
 
     def on_return(self):
         # Revient à l'écran titre
@@ -379,7 +399,13 @@ class GameScreen(ctk.CTkFrame):
         #on ajoute les bonnes informations (les poissons)
         for x in self.master.user.inventory:
                 if x.name == fish_name:
-                    label = ctk.CTkLabel(self.inventory_frame_scroll, text = f"• {x.size} cm, {x.weight} kg")
+
+                    #si le poid est petit, on le change en g
+                    if x.weight < 1.0:
+                        label = ctk.CTkLabel(self.inventory_frame_scroll, text = f"• {x.size:.1f} cm, {int(x.weight * 1000)} g")
+                    else:
+                        label = ctk.CTkLabel(self.inventory_frame_scroll, text = f"• {x.size:.1f} cm, {x.weight:.2f} kg")
+
                     label.pack(pady = 5, padx = 10, anchor = 'w')
 
     def on_fishing(self):
@@ -400,9 +426,12 @@ class GameScreen(ctk.CTkFrame):
         wait_time = self.current_catch.rarity.seconds
         je vais mettre 5 secondes pour l'instant
         '''
-        sec = 5
+
+        self.fishing_timer = None
+
+        sec = self.current_catch.getTimeWaiting()
         wait_time = sec*1000 #milisecondes
-        self.temp_clicks_needed = 12
+        self.temp_clicks_needed = self.current_catch.getNbClicks()
         self.temp_clicks = 0
 
         ##############################
@@ -412,9 +441,12 @@ class GameScreen(ctk.CTkFrame):
         self.after(wait_time, self.start_bite)
 
     def start_bite(self):
-        sec_to_catch = 5
+        if self.fishing_timer != None:
+            self.fishing_timer.autoDestruct()
+
+        sec_to_catch = self.current_catch.getTimeFishing()
         self.fishing_timer = Timer(self.header_frame,sec_to_catch)
-        self.after(sec_to_catch*1000, self.on_escaped)
+        self.escape_job = self.after(sec_to_catch*1000, self.on_escaped)
 
         self.fish_button.configure(text = "Ça mord! Cliquez vite!", 
                                    state = 'normal',
@@ -429,15 +461,19 @@ class GameScreen(ctk.CTkFrame):
         self.fish_button.configure(text = f"({self.temp_clicks_needed - self.temp_clicks} clics restants)")
         #check si le joueur a réussi
         if self.temp_clicks >= self.temp_clicks_needed:
-
+            
+            self.fish_button.configure(command=None, state = "disabled")    
             self.fishing_timer.stop()
+            self.after_cancel(self.escape_job)
 
             self.master.user.updateInventory(self.current_catch)
 
-            path = f"assets/{self.current_catch.name}.png"
-            current_fish_image = ImageConfig(path,path,100,100)
+            
 
             if self.current_catch.isFish:
+                path = f"assets/{self.current_catch.name}.png"
+                current_fish_image = ImageConfig(path,path,100,100)
+
                 self.gallery_dict[self.current_catch.name].configure(image = current_fish_image.getImage())
 
             self.user_fish_label.configure(text = f'Poissons : {self.master.user.getUserNbFish()}')
@@ -448,8 +484,7 @@ class GameScreen(ctk.CTkFrame):
                 self.modify_inventory_list(self.current_catch.name)
 
             #on retourne au bouton initial
-            self.fish_button.configure(text = f"Poisson attrapé!\n{self.current_catch.name}", 
-                                        state = 'disabled')
+            self.fish_button.configure(text = f"Poisson attrapé!\n{self.current_catch.name}")
             self.after(3*1000, self.normal_fish_button)
             
 
@@ -516,7 +551,7 @@ class MainApp(ctk.CTk):
         self.title("Fish le poisson")
 
         self.user = User()
-        self.data = Data(r"assets/fishEncylopedia3.csv")
+        self.data = Data(r"assets/fishData.csv")
         
         self.current_frame = None
         self.show_frame(TitleScreen)
