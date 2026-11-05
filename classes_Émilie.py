@@ -29,6 +29,9 @@ class User():
     def setUserName(self, name):
         self.name = name
 
+    def setUserLevel(self, level):
+        self.level = level
+
     #getters
     def getUserName(self):
         return self.name
@@ -135,6 +138,8 @@ class Catch():
             self.clicks = 10
 
         elif self.rarity == "uncommon":
+
+            #on veut augmenter un peu le temps d'attente pour que l'utilisateur 
             self.timeWaiting = 5  #(en sec)
             
             self.clicks = 18
@@ -239,6 +244,7 @@ class Timer():
         else:
             self.isFinished = True
 
+
     #getter
     def getIsFinished(self):
         return self.isFinished
@@ -254,14 +260,3 @@ class Timer():
             self.label.configure(text="00 sec")
 
 
-
-
-
-'''app = ctk.CTk()
-app.geometry("800x400")
-
-timer = Timer(app, 10)
-
-app.after(500, timer.updateTimerWithPrint)
-
-app.mainloop()'''
