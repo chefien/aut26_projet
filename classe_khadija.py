@@ -217,34 +217,41 @@ class StatsPlot(ctk.CTkFrame):
     graph: circle to compare nb of fish and trash collected
     
     '''
-class Fishing():
-    def __init__(self,catch):
+class Fishing(ctk.CTkFrame):
+    def __init__(self,master,catch):
+        super().__init__(master)
         '''
         one def for the attendez, one for the click one for the finish
         '''
         from classes_Émilie import Timer
         self.catch = catch # needs to be randomised before so you do fish(random choice of fish)
         self.clicks = None
-        self.timerPassed= Timer(random.randint(0,100),0,0)
+        self.timerPassed= Timer(self.master,self.catch.getTimeFishing())
+        self.timerPassed.updatetimerWithoutPrint()
         self.timer = None
         self.win = False
+        self.fishingActive = False
         #updates the clicks and timer and prepares for stage 2 
         self.waiting()
         #stage 2 and forth will have to be manually done
 
     def waiting(self):
-        newTime = self.timerPassed.timingWithoutPrint() # so the time passes
-        if newTime.getIsFinished():
-            pass
-            #self.clicks = getrarity
-            #self.timer = gettimer
+         # it defines the clicks and timer if the first timer finished
+        if self.timerPassed.getIsFinished():
+            self.clicks = self.catch.getNbClicks()
+            self.timer = Timer(self.master,self.catch.getTimeWaiting())
+            self.fishingActive = True
+        else: # if the first timer didnt finish it wait a bit and redo the waiting function
+            self.master.after(20,self.waiting)
 
     def reducingClicks(self):
-        self.clicks = self.clicks - 1
+        if self.fishingActive and self.clicks is not None:
+            self.clicks = self.clicks - 1
+        
     def checkFinalStatus(self):
-        if self.timer.getIsFinished() == False and self.clicks == 0:
+        if self.timer.getIsFinished() == False and self.clicks == 0 and self.fishingActive:
             return True
-        if self.timer.getIsFinished() == True and self.clicks != 0:
+        if self.timer.getIsFinished() == True and self.clicks != 0 and self.fishingActive:
             return False
 
     #getters
