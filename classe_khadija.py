@@ -309,20 +309,20 @@ class GifImage(ctk.CTkFrame): #OPTIONELLE A REVOIR ET TESTER SI CA FONCTIONNE
             self.showAnim = self.master.after(self.wait, lambda: animation(count) ) # on attend self.wait de seconde avant de refaire la fonction: de plus lambda fais que la fct ne s'eexecute pas immediatement, et d'attendre jusqu'a ce que la condition soit satisfaite
         animation(0) # on fait demarer lanimation le zero cest le debut soit le count 0
 
-app = ctk.CTk()
-app.geometry("800x400")
-img1 = ImageConfig("assets/mainMenu.jpeg","assets/mainMenu.jpeg",800,400)
-my_label = ctk.CTkLabel(app, text="", image=img1.getImage())
-my_label.pack(pady=10)
-fishimg = GifImage(app,"assets/ocean.gif",150, 25, 100, 25, 50) # to fix the sizing
-app.mainloop()
+#app = ctk.CTk()
+#app.geometry("800x400")
+#img1 = ImageConfig("assets/mainMenu.jpeg","assets/mainMenu.jpeg",800,400)
+#my_label = ctk.CTkLabel(app, text="", image=img1.getImage())
+#my_label.pack(pady=10)
+#fishimg = GifImage(app,"assets/ocean.gif",150, 25, 100, 25, 50) # to fix the sizing
+#app.mainloop()
 
 
 
 
 
-data1 = Data("assets/fishEncylopedia3.csv") #jsp honestly
-print(data1.getFishEncyclopedia())
+#data1 = Data("assets/fishEncylopedia3.csv") #jsp honestly
+#print(data1.getFishEncyclopedia())
 
 #le lien du fichier ne fonctionne pas correctement, faut voir cest quoi le probleme avec le fichier
 #wshhh
