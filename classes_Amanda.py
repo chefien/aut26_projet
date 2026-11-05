@@ -11,6 +11,12 @@ from classes_Émilie import User, Catch, Timer
 from classe_khadija import ImageConfig, Data, GifImage, SavingSystem
 from PIL import Image, ImageEnhance
 
+##Pour les stats
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+
+
 class TitleScreen(ctk.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
@@ -47,7 +53,7 @@ class TitleScreen(ctk.CTkFrame):
         self.credit_btn.pack(pady = 10)
 
         #Bouton Charger
-        self.quit_btn = ctk.CTkButton(self, text = 'Quitter', command = self.master.destroy, corner_radius=0)
+        self.quit_btn = ctk.CTkButton(self, text = 'Quitter', command = self.master.on_closing, corner_radius=0)    
         self.quit_btn.pack(pady = 10)
 
     def on_play(self):
@@ -60,6 +66,8 @@ class TitleScreen(ctk.CTkFrame):
 
     def credit_frame(self):
         self.master.show_frame(CreditScreen)
+
+    
 
 class newGameScreen(ctk.CTkFrame):
     def __init__(self,master):
@@ -317,6 +325,46 @@ class GameScreen(ctk.CTkFrame):
 
         self.current_selected_name = None
 
+    #Puisque la class StatsPlot n'est pas fonctionnelle et la remise est bientôt
+    def create_stats_panel(self):
+        #stats du joueur
+        nb_fishes = self.master.user.getUserNbFish()
+        nb_junk = self.master.user.getUserNbTrash()
+
+        #liste des poissons différents attrapés
+        found_fishes = []
+        for x in self.master.user.inventory:
+            if x.isFish and x.name not in found_fishes:
+                found_fishes.append(x.name)
+
+        total_fishes = len(self.master.data.getFishNameList())
+        found = len(found_fishes)
+        left = total_fishes-found
+
+        #creation des graphiques
+        fig = plt.figure(figsize=(7, 3.5), facecolor="#9fb498")
+
+        # graphique 1 - Total des prises
+        ax1 = plt.subplot(1, 2, 1)
+        ax1.set_facecolor("#dee6ed")
+        ax1.bar(["Poissons", "Déchets"], [nb_fishes, nb_junk], color=["#66ce7f", "#a0816c"])
+        ax1.set_title("Total des prises")
+        #force que ce soit des entiers pour l'axe des y
+        ax1.yaxis.get_major_locator().set_params(integer=True)
+
+        #graphique 2 -Carnet de pêche
+        ax2 = plt.subplot(1, 2, 2)
+        ax2.set_facecolor("#9fb498")
+        if total_fishes > 0:
+            ax2.pie([found, left], labels=["Trouvés", "Restants"], autopct="%1.0f%%", colors=["#66ce7f", "#dee6ed"], startangle=90)
+            ax2.set_title("Carnet de pêche")
+
+        plt.tight_layout()
+
+        canvas = FigureCanvasTkAgg(fig, master=self.stats_container)
+        canvas.draw()
+        canvas.get_tk_widget().pack(expand=True, fill="both", padx=10, pady=10)
+
         
 
 
@@ -325,6 +373,7 @@ class GameScreen(ctk.CTkFrame):
     #######################
     def on_load(self):
         path = ctk.filedialog.askopenfilename(initialdir= "saves")
+        ##fonctionne pas
         #self.saving_system = SavingSystem(self.master.user, path)
         #self.saving_system.loadingFromCsv(path)
         
@@ -344,16 +393,27 @@ class GameScreen(ctk.CTkFrame):
         self.main_container.pack_forget()
         self.stats_container.pack(expand=True, fill="both", padx=10, pady=5)
 
+        self.create_stats_panel()
+
 
     
 
     def on_return_fishing(self):
-        self.stats_container.pack_forget()
-        self.stats_btn.configure(text = 'Statistiques du jeu', command = self.on_stats)
+        plt.close('all') 
+        if hasattr(self, 'stats_container') and self.stats_container.winfo_exists():
+            self.stats_container.destroy() 
 
+        self.stats_btn.configure(text = 'Statistiques du jeu', command = self.on_stats)
         self.main_container.pack(expand=True, fill="both", padx=10, pady=5)
 
     def on_return(self):
+        
+        #arrete le timer s'il roulait encore
+        if self.fishing_timer is not None:
+            self.fishing_timer.stop()
+        if hasattr(self, 'escape_job'):
+            self.after_cancel(self.escape_job)
+
         # Revient à l'écran titre
         self.master.show_frame(TitleScreen)
 
@@ -653,6 +713,7 @@ class MainApp(ctk.CTk):
         self.center_window()
 
         self.title("Fish le poisson")
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         self.user = User()
         self.data = Data(r"assets/fishData.csv")
@@ -686,6 +747,10 @@ class MainApp(ctk.CTk):
 
         self.current_frame = frame_class(master = self)
         self.current_frame.pack(expand = True, fill = 'both')
+
+    def on_closing(self):
+        self.quit()
+        self.destroy()
 
 
         
