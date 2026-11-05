@@ -235,7 +235,7 @@ class GameScreen(ctk.CTkFrame):
         ##le gif de l'environnement
         #environment_gif = GifImage(self.center_panel,"assets/ocean.gif", 100, 100, 5)
         #environment_gif.pack(pady = 5, padx = 5)
-        path = r"assets\mainMenu.jpeg"
+        path = r"assets/mainMenu.jpeg"
         environment_img = ImageConfig(path,path,360,360)
         environment_label = ctk.CTkLabel(self.center_panel, image=environment_img.getImage(),text = '')
         environment_label.pack()
