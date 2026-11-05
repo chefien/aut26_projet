@@ -32,6 +32,19 @@ class User():
     def setUserLevel(self, level):
         self.level = level
 
+    def setUserInventory(self, inventory):
+        self.inventory = inventory
+
+    def setUserNbFish(self, nbFish):
+        self.nbFish = nbFish
+
+    def setUserNbTrash(self, nbTrash):
+        self.nbTrash = nbTrash
+
+    def setUserNbCatsh(self, nbCatch):
+            self.nbCatsh = nbCatch
+
+
     #getters
     def getUserName(self):
         return self.name
