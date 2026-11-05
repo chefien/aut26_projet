@@ -24,7 +24,7 @@ class User():
         self.nbTrash = 0
         self.nbCatch = 0
 
-
+    #setters
     #après avoir demander le nom
     def setUserName(self, name):
         self.name = name
@@ -78,12 +78,17 @@ class User():
     #update level avec condition, si rempli change level et return vrai, sinon return faux
     # level + (level-1) + 2 doit être 
     def isLeveledUp(self):
-        if self.nbFish >= (self.level + (self.level-1) + 2):
+        #if self.nbFish >= (self.level + (self.level-1) + 2):
+        if self.nbFish >= (self.level + (sum(range(1, self.level+1))) * 2):
             self.level += 1
             return True
         return False
 
 
+#0    1    2    3    4    5    6    7    8
+#  1    2    5    7    9    11   13   15
+#  1    3    8    15   24   35   48   53
+#(niveau + niveau-1 + niveau-2 + niveau-3 ) * 2 + niveau
 
 
 class Catch():
@@ -314,7 +319,7 @@ class Timer():
     def autoDestruct(self):
         self.label.destroy()
 
-
+    #met le label à 00 si le label a déjà été créé et qu'il existe encore
     def stop(self):
         self.isFinished = True
         if self.label is not None and self.label.winfo_exists():

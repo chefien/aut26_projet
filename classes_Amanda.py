@@ -11,6 +11,12 @@ from classes_Émilie import User, Catch, Timer
 from classe_khadija import ImageConfig, Data, GifImage, SavingSystem
 from PIL import Image, ImageEnhance
 
+##Pour les stats
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+
+
 class TitleScreen(ctk.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
@@ -47,7 +53,7 @@ class TitleScreen(ctk.CTkFrame):
         self.credit_btn.pack(pady = 10)
 
         #Bouton Charger
-        self.quit_btn = ctk.CTkButton(self, text = 'Quitter', command = self.master.destroy, corner_radius=0)
+        self.quit_btn = ctk.CTkButton(self, text = 'Quitter', command = self.master.on_closing, corner_radius=0)    
         self.quit_btn.pack(pady = 10)
 
     def on_play(self):
@@ -60,6 +66,8 @@ class TitleScreen(ctk.CTkFrame):
 
     def credit_frame(self):
         self.master.show_frame(CreditScreen)
+
+    
 
 class newGameScreen(ctk.CTkFrame):
     def __init__(self,master):
@@ -148,7 +156,7 @@ class GameScreen(ctk.CTkFrame):
         self.user_info_frame = ctk.CTkFrame(self.left_panel,fg_color="#dee6ed", height = 50)
         self.user_info_frame.pack(side = 'top', pady = (0,10), fill = 'x')
         #montre le nom du joueur
-        self.user_name_label = ctk.CTkLabel(self.user_info_frame, text = self.master.user.getUserName(),font=("arial", 21, 'bold'))
+        self.user_name_label = ctk.CTkLabel(self.user_info_frame, text = self.master.user.getUserName(),font=("arial", 21, 'bold'), wraplength=200)
         self.user_name_label.pack(pady = 10, side = 'left', padx = 20)
         #montre le niveau du joueur
         self.user_level_label = ctk.CTkLabel(self.user_info_frame, text = f'Niveau : {self.master.user.getUserLevel()}')
@@ -237,8 +245,8 @@ class GameScreen(ctk.CTkFrame):
         #environment_gif.pack(pady = 5, padx = 5)
         path = r"assets/mainMenu.jpeg"
         environment_img = ImageConfig(path,path,360,360)
-        environment_label = ctk.CTkLabel(self.center_panel, image=environment_img.getImage(),text = '')
-        environment_label.pack()
+        self.environment_label = ctk.CTkLabel(self.center_panel, image=environment_img.getImage(),text = '')
+        self.environment_label.pack()
         ##bar de progression
         self.reel_bar = ctk.CTkProgressBar(
                                             self.center_panel, 
@@ -287,14 +295,18 @@ class GameScreen(ctk.CTkFrame):
         self.label_fish_name =ctk.CTkLabel(self.right_panel, text = "Aucun")
         self.label_fish_name.pack(pady = 5)
 
-        fish_image = ImageConfig(r"assets/NoSelection.jpg",r"assets/NoSelection.jpg", 150,150)
-        self.label_fish_image = ctk.CTkLabel(self.right_panel, 
-                                             image=fish_image.getImage(), 
+        self.frame_fish_image = ctk.CTkFrame(self.right_panel, 
                                              height=150, width=150, 
                                              border_color="#000000", 
                                              border_width=2,
+                                             corner_radius=0)
+        self.frame_fish_image.pack(pady = 5)
+
+        fish_image = ImageConfig(r"assets/NoSelection.jpg",r"assets/NoSelection.jpg", 150,150)
+        self.label_fish_image = ctk.CTkLabel(self.frame_fish_image, 
+                                             image=fish_image.getImage(),
                                              text = '')
-        self.label_fish_image.pack(pady = 5)
+        self.label_fish_image.pack(anchor = 'center',padx = 2, pady = 2)
 
         self.label_rarity = ctk.CTkLabel(self.right_panel,text = 'N/A')
         self.label_rarity.pack(pady = 5)
@@ -313,6 +325,46 @@ class GameScreen(ctk.CTkFrame):
 
         self.current_selected_name = None
 
+    #Puisque la class StatsPlot n'est pas fonctionnelle et la remise est bientôt
+    def create_stats_panel(self):
+        #stats du joueur
+        nb_fishes = self.master.user.getUserNbFish()
+        nb_junk = self.master.user.getUserNbTrash()
+
+        #liste des poissons différents attrapés
+        found_fishes = []
+        for x in self.master.user.inventory:
+            if x.isFish and x.name not in found_fishes:
+                found_fishes.append(x.name)
+
+        total_fishes = len(self.master.data.getFishNameList())
+        found = len(found_fishes)
+        left = total_fishes-found
+
+        #creation des graphiques
+        fig = plt.figure(figsize=(7, 3.5), facecolor="#9fb498")
+
+        # graphique 1 - Total des prises
+        ax1 = plt.subplot(1, 2, 1)
+        ax1.set_facecolor("#dee6ed")
+        ax1.bar(["Poissons", "Déchets"], [nb_fishes, nb_junk], color=["#66ce7f", "#a0816c"])
+        ax1.set_title("Total des prises")
+        #force que ce soit des entiers pour l'axe des y
+        ax1.yaxis.get_major_locator().set_params(integer=True)
+
+        #graphique 2 -Carnet de pêche
+        ax2 = plt.subplot(1, 2, 2)
+        ax2.set_facecolor("#9fb498")
+        if total_fishes > 0:
+            ax2.pie([found, left], labels=["Trouvés", "Restants"], autopct="%1.0f%%", colors=["#66ce7f", "#dee6ed"], startangle=90)
+            ax2.set_title("Carnet de pêche")
+
+        plt.tight_layout()
+
+        canvas = FigureCanvasTkAgg(fig, master=self.stats_container)
+        canvas.draw()
+        canvas.get_tk_widget().pack(expand=True, fill="both", padx=10, pady=10)
+
         
 
 
@@ -321,6 +373,7 @@ class GameScreen(ctk.CTkFrame):
     #######################
     def on_load(self):
         path = ctk.filedialog.askopenfilename(initialdir= "saves")
+        ##fonctionne pas
         #self.saving_system = SavingSystem(self.master.user, path)
         #self.saving_system.loadingFromCsv(path)
         
@@ -340,16 +393,27 @@ class GameScreen(ctk.CTkFrame):
         self.main_container.pack_forget()
         self.stats_container.pack(expand=True, fill="both", padx=10, pady=5)
 
+        self.create_stats_panel()
+
 
     
 
     def on_return_fishing(self):
-        self.stats_container.pack_forget()
-        self.stats_btn.configure(text = 'Statistiques du jeu', command = self.on_stats)
+        plt.close('all') 
+        if hasattr(self, 'stats_container') and self.stats_container.winfo_exists():
+            self.stats_container.destroy() 
 
+        self.stats_btn.configure(text = 'Statistiques du jeu', command = self.on_stats)
         self.main_container.pack(expand=True, fill="both", padx=10, pady=5)
 
     def on_return(self):
+        
+        #arrete le timer s'il roulait encore
+        if self.fishing_timer is not None:
+            self.fishing_timer.stop()
+        if hasattr(self, 'escape_job'):
+            self.after_cancel(self.escape_job)
+
         # Revient à l'écran titre
         self.master.show_frame(TitleScreen)
 
@@ -507,12 +571,30 @@ class GameScreen(ctk.CTkFrame):
             
             if self.current_catch.isFish:
                 self.fish_button.configure(text = f"Poisson attrapé!\n{self.current_catch.name}",fg_color="#69F0C1")
+                self.show_catched_fish()
             else:
-                self.fish_button.configure(text = f"Déchet repêché...\n{self.current_catch.name}", fg_color="#A5A50A")
+                self.fish_button.configure(text = f"Déchet repêché...\n{self.current_catch.name}", fg_color="#949A31")
             self.after(3*1000, self.normal_fish_button)
             
 
             
+    def show_catched_fish(self):
+        show_fish_frame = ctk.CTkFrame(self.center_panel,
+                                       height=200,width=200,
+                                        border_color="#FFFFFF",
+                                        border_width=5,
+                                       corner_radius=0)
+        
+        show_fish_frame.place(relx=0.5, rely=0.42, anchor='center')
+
+        path = f"assets/{self.current_catch.name}.png"
+        current_fish_image = ImageConfig(path,path,200,200) 
+        show_fish_label = ctk.CTkLabel(show_fish_frame,
+                                       image = current_fish_image.getImage(),
+                                       text = '')
+        show_fish_label.pack(anchor = 'center', padx = 5, pady = 5)
+
+        self.after(3*1000, show_fish_frame.place_forget) 
 
     def on_escaped(self):
         if self.temp_clicks_needed>self.temp_clicks:
@@ -540,20 +622,75 @@ class GameScreen(ctk.CTkFrame):
 
 class CreditScreen(ctk.CTkFrame):
     def __init__(self,master):
+
         super().__init__(master)
 
-        self.label = ctk.CTkLabel(self, text = 'Crédits', font = ('ariel', 24, 'bold'))
-        self.label.pack(pady = 30)
+        self.scroll_frame = ctk.CTkScrollableFrame(self)
+        self.scroll_frame.pack(expand = True, fill = 'both')
+
+        self.label = ctk.CTkLabel(self.scroll_frame, text = 'Crédits', font = ('ariel', 24, 'bold'))
+        self.label.pack(pady = 20)
+
+        
+        by_label = ctk.CTkLabel(
+            self.scroll_frame, 
+            text="Projet créé par :", 
+            font=("arial", 16, 'bold')
+        )
+        by_label.pack(pady=10)
 
         self.names = ctk.CTkLabel(
-            self, 
-            text="Projet créé par :\n- Amanda\n- Khadija\n- Émilie", 
+            self.scroll_frame, 
+            text="Amanda Lidia Pulache,\nKhadija Abid et\nÉmilie Ouellet", 
             font=("arial", 16)
         )
-        self.names.pack(pady=20)
+        self.names.pack(pady=10)
+        context_label = ctk.CTkLabel(
+            self.scroll_frame, 
+            text="Dans le contexte du cours", 
+            font=("arial", 16, 'bold')
+        )
+        context_label.pack(pady=10)
+
+        context_info_label = ctk.CTkLabel(
+            self.scroll_frame, 
+            text="420-SF3-RE\nDÉVELOPPEMENT D'APPLICATIONS DANS\nUN ENVIRONNEMENT GRAPHIQUE\ngroupe 02231", 
+            font=("arial", 16)
+        )
+        context_info_label.pack(pady=10)
+
+        due_label = ctk.CTkLabel(
+            self.scroll_frame, 
+            text="Pour", 
+            font=("arial", 16, 'bold')
+        )
+        due_label.pack(pady=10)
+
+        due_info_label = ctk.CTkLabel(
+            self.scroll_frame, 
+            text="Ala Antabli\n16 novembre 2026", 
+            font=("arial", 16)
+        )
+        due_info_label.pack(pady=10)
+
+        source_label = ctk.CTkLabel(
+            self.scroll_frame, 
+            text=". . .\n\nSources:", 
+            font=("arial", 16, 'italic')
+        )
+        source_label.pack(pady=10)
+
+        sources_name_label = ctk.CTkLabel(
+            self.scroll_frame, 
+            text="- Wikipedia", 
+            font=("arial", 16)
+        )
+        sources_name_label.pack(pady=10)
+
+        
 
         # Bouton pour revenir au menu principal
-        self.back_btn = ctk.CTkButton(self, text="Retour", command=self.back)
+        self.back_btn = ctk.CTkButton(self.scroll_frame, text="Retour", command=self.back)
         self.back_btn.pack(pady=20)
 
     def back(self):
@@ -576,6 +713,7 @@ class MainApp(ctk.CTk):
         self.center_window()
 
         self.title("Fish le poisson")
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         self.user = User()
         self.data = Data(r"assets/fishData.csv")
@@ -609,6 +747,10 @@ class MainApp(ctk.CTk):
 
         self.current_frame = frame_class(master = self)
         self.current_frame.pack(expand = True, fill = 'both')
+
+    def on_closing(self):
+        self.quit()
+        self.destroy()
 
 
         
