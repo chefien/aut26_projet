@@ -4,3 +4,6 @@ __pycache__/classe_khadija.cpython-314.pyc
 /__pycache__
 __pycache__/classe_khadija.cpython-314.pyc
 /__pycache__
+dist/
+build/
+*.spec
