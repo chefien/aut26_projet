@@ -8,7 +8,7 @@ Chaque frame est une classe, ce qui simplifie la programmation et la rend claire
 
 import customtkinter as ctk
 from classes_Émilie import User, Catch, Timer
-from classe_khadija import ImageConfig, Data,Fishing
+from classe_khadija import ImageConfig, Data, Fishing, SavingSystem
 from PIL import Image, ImageEnhance
 
 ##Pour les stats
@@ -62,7 +62,11 @@ class TitleScreen(ctk.CTkFrame):
         self.master.show_frame(newGameScreen)
 
     def on_load(self):
-        print("Chargement de la sauvegarde")
+        path = ctk.filedialog.askopenfilename(initialdir="saves",filetypes=[("Fichiers CSV", "*.csv")])
+        if path:
+            saving = SavingSystem(self.master.user, path, self.master.data)
+            saving.loadingFromCsv(path)
+            self.master.show_frame(GameScreen)
 
     def credit_frame(self):
         self.master.show_frame(CreditScreen)
@@ -371,16 +375,42 @@ class GameScreen(ctk.CTkFrame):
     #######################
     #Commandes des boutons#
     #######################
-    def on_load(self):
-        path = ctk.filedialog.askopenfilename(initialdir= "saves")
-        ##fonctionne pas
-        #self.saving_system = SavingSystem(self.master.user, path)
-        #self.saving_system.loadingFromCsv(path)
-        
-        print("Bouton charger cliqué")
-
     def on_save(self):
-        print("Bouton sauvegarder cliqué")
+        path = ctk.filedialog.asksaveasfilename(
+            initialdir="saves", 
+            initialfile="save.csv",
+            defaultextension=".csv", 
+            filetypes=[("Fichiers CSV", "*.csv")]
+        )
+        if path:
+            saving = SavingSystem(self.master.user, path, self.master.data)
+            saving.setUsername(self.master.user.getUserName())
+            saving.setLevel(self.master.user.getUserLevel())
+            saving.setInv(self.master.user.getUserInventory())
+            saving.savingToFile()
+            print("Partie sauvegardée dans", path)
+
+    def on_load(self):
+        path = ctk.filedialog.askopenfilename(filetypes=[("Fichiers CSV", "*.csv")],
+                                              initialdir="saves")
+        if path:
+            saving = SavingSystem(self.master.user, path, self.master.data)
+            saving.loadingFromCsv(path)
+            self.refresh_after_load()
+            print("Partie chargée depuis", path)
+
+    def refresh_after_load(self):
+        #met a jour le ui
+        self.user_name_label.configure(text = self.master.user.getUserName())
+        self.user_level_label.configure(text = f'Niveau : {self.master.user.getUserLevel()}')
+        self.user_fish_label.configure(text = f'Poissons : {self.master.user.getUserNbFish()}')
+
+        # 2.revele les poissons
+        for item in self.master.user.inventory:
+            if item.isFish and item.name in self.gallery_dict:
+                path = f"assets/{item.name}.png"
+                img = ImageConfig(path, path, 100, 100)
+                self.gallery_dict[item.name].configure(image = img.getImage())
 
     def on_options(self):
         print("Bouton options cliqué")
