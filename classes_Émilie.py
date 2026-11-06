@@ -75,10 +75,15 @@ class User():
             self.nbTrash += 1
 
 
-    #update level avec condition, si rempli change level et return vrai, sinon return faux
-    # level + (level-1) + 2 doit être 
+    #met à jour le niveau avec une condition
+    #si la condition est remplie on change le niveau et on retourne vrai, sinon on retourne faux 
     def isLeveledUp(self):
-        #if self.nbFish >= (self.level + (self.level-1) + 2):
+
+        #la condition est que le nombre total de poissons attrappés doit être supérieur ou 
+        #égal au niveau actuel + (niveau + niveau-1 + niveau-2 + ... + 1) * 2
+        #par exemple:
+        #niveau actuel: 0      1      2      3      4      5      6      7      8
+        #
         if self.nbFish >= (self.level + (sum(range(1, self.level+1))) * 2):
             self.level += 1
             return True
@@ -119,6 +124,7 @@ class Catch():
 
             #la rareté va servir pour implémenter le temps d'attente et le nombre de clics pour la pêche
             self.rarity = data.getFishSpecific(self.name)["rarity"]
+
 
         #pour les déchets
         else : 
@@ -272,7 +278,7 @@ class Timer():
     def updateTimerWithPrint(self):
         currentTime = time.time()
 
-        #si le label n'a pas encore été détruit (autoDestruct) et on n'est pas encore rendu à la fin
+        #si la légende n'a pas encore été détruit (autoDestruct) et on n'est pas encore rendu à la fin
         if not self.isFinished and currentTime < self.end:
 
             #mettre à jour le temps restant avant la fin du compte-à-rebours
@@ -284,14 +290,17 @@ class Timer():
             #prendre la partie après la virgule et on la multiplie par 100 car on l'utilise comme un entier
             millisecondsLeft = int((timeLeft - secondsLeft) * 100)
 
-            #mettre à jour le label (le 02d c'est pour 2 décimales)
+            #mettre à jour la légende (le 02d c'est pour 2 décimales)
             self.label.configure(text=f"{secondsLeft:02d}.{millisecondsLeft:02d} sec")
                                 
             #rafraîchir toutes les 10 ms pour que le défilement soit fluide
             self.master.after(10, self.updateTimerWithPrint)
             
 
+        #si c'est terminé
         else:
+
+            #change la légende 
             self.label.configure(text="C'est fini !")
             self.isFinished = True
             self.master.after(3*1000, self.autoDestruct)
@@ -301,7 +310,7 @@ class Timer():
     def updatetimerWithoutPrint(self):
         currentTime = time.time()
 
-        #si le label n'a pas encore été détruit (autoDestruct) et on n'est pas encore rendu à la fin
+        #si la légende n'a pas encore été détruit (autoDestruct) et on n'est pas encore rendu à la fin
         if not self.isFinished and currentTime < self.end:
 
             #puisqu'on ne l'affiche pas, il n'est pas nécessaire de raffraichir aussi souvent        
@@ -315,11 +324,11 @@ class Timer():
     def getIsFinished(self):
         return self.isFinished
 
-    #détruit le label
+    #détruit la légende
     def autoDestruct(self):
         self.label.destroy()
 
-    #met le label à 00 si le label a déjà été créé et qu'il existe encore
+    #met la légende à 00 si la légende a déjà été créé et qu'il existe encore
     def stop(self):
         self.isFinished = True
         if self.label is not None and self.label.winfo_exists():
