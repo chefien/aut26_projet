@@ -738,17 +738,43 @@ class CreditScreen(ctk.CTkFrame):
 
         source_label = ctk.CTkLabel(
             self.scroll_frame, 
-            text=". . .\n\nSources:", 
-            font=("arial", 16, 'italic')
+            text=". . .\n\nSources bibliographiques & techniques :", 
+            font=("arial", 18, 'bold')
         )
-        source_label.pack(pady=10)
+        source_label.pack(pady=(15, 10))
+
+        sources_text = (
+            "\n• Gouvernement de l'Ontario (Guides et fiches fauniques)\n"
+            "  - Guide de pêche : https://files.ontario.ca/environment-and-energy/fishing/198234.pdf\n"
+            "  - Grand brochet : https://www.ontario.ca/fr/page/grand-brochet\n"
+            "  - Achigan à petite bouche : https://www.ontario.ca/fr/page/achigan-petite-bouche\n"
+            "  - Perchaude : https://www.ontario.ca/fr/page/perchaude\n"
+            "  - Crapet arlequin : https://www.ontario.ca/fr/page/crapet-arlequin\n"
+            "  - Crapet de roche : https://www.ontario.ca/fr/page/crapet-de-roche\n\n"
+            "• Gouvernement du Québec (Faune et ressources naturelles)\n"
+            "  - Doré jaune : https://www.quebec.ca/agriculture-environnement-et-ressources-naturelles/faune/animaux-sauvages-quebec/fiches-especes-fauniques/dore-jaune\n"
+            "  - Crapet-soleil : https://www.quebec.ca/agriculture-environnement-et-ressources-naturelles/faune/animaux-sauvages-quebec/fiches-especes-fauniques/crapet-soleil\n\n"
+            "• Gouvernement du Canada (Pêches et Océans)\n"
+            "  - Profil du grand brochet : https://www.dfo-mpo.gc.ca/species-especes/profiles-profils/northernpike-grandbrochet-fra.html\n\n"
+            "• Fishipedia (Encyclopédie des poissons d'eau douce)\n"
+            "  - Poissons de lac : https://www.fishipedia.fr/fr/poissons/biotopes/lac?pg=4\n\n"
+            "• Aquareap\n"
+            "  - Acapoeta tanganicae : https://aquareap.com/fish/acapoeta-tanganicae\n\n"
+            "• Wikipedia\n"
+            "  - Catfish : https://en.wikipedia.org/wiki/Catfish\n\n"
+            "• Outils de génération & Références de code\n"
+            "  - Random Object Generator : https://perchance.org/object\n"
+            "  - GeeksforGeeks (Intégration Matplotlib Tkinter) : https://www.geeksforgeeks.org/python/how-to-embed-matplotlib-charts-in-tkinter-gui/"
+        )
 
         sources_name_label = ctk.CTkLabel(
             self.scroll_frame, 
-            text="- Wikipedia", 
-            font=("arial", 16)
+            text=sources_text, 
+            font=("arial", 12),
+            justify="left",
+            wraplength=850
         )
-        sources_name_label.pack(pady=10)
+        sources_name_label.pack(pady=10, padx=20)
 
         
 
