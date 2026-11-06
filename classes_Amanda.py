@@ -8,7 +8,7 @@ Chaque frame est une classe, ce qui simplifie la programmation et la rend claire
 
 import customtkinter as ctk
 from classes_Émilie import User, Catch, Timer
-from classe_khadija import ImageConfig, Data, GifImage, SavingSystem
+from classe_khadija import ImageConfig, Data,Fishing
 from PIL import Image, ImageEnhance
 
 ##Pour les stats
@@ -490,74 +490,65 @@ class GameScreen(ctk.CTkFrame):
                     label.pack(pady = 5, padx = 10, anchor = 'w')
 
     def on_fishing(self):
-        #Il existe 3 phases de la mécanique du jeu:
-
-        #################    
-        #LANCER LA LIGNE#
-        #################
-
-        #genere un catch
-        self.current_catch = Catch(self.master.data)
-        #change le text pour montrer que le joueur est en attente d'un poisson
-        self.fish_button.configure(text = "Patientez...", state = 'disabled')
-        #on attend un certain moment
-
+        #je n'ai pas pu implémenter entièrement fishing de khadija puisqu'elle n'est pas completement fonctionnelle et la remise est bientot
         if self.fishing_timer != None:
             self.fishing_timer.autoDestruct()
         self.fishing_timer = None
 
+        #génère un catch 
+        self.current_catch = Catch(self.master.data)
+
+        #temps d'attente selon la rareté
         sec = self.current_catch.getTimeWaiting()
-        wait_time = sec*1000 #milisecondes
-        self.temp_clicks_needed = self.current_catch.getNbClicks()
-        self.temp_clicks = 0
+        if sec <= 0:
+            sec = 4
+        wait_time = sec * 1000
 
-        
+        #clics selon la rareté
+        self.clicks_total = self.current_catch.getNbClicks()
+        if self.clicks_total <= 0:
+            self.clicks_total = 10
+        self.clicks_left = self.clicks_total
 
-        ##############################
-        #CLIQUER RAPIDEMENT (CA MORD)#
-        ##############################
-        
+        self.fish_button.configure(text = "Patientez...", state = 'disabled')
         self.after(wait_time, self.start_bite)
 
+
     def start_bite(self):
-  
-
-        
-
+        #temps pour pêcher selon le catch
         sec_to_catch = self.current_catch.getTimeFishing()
-        self.fishing_timer = Timer(self.header_frame,sec_to_catch)
-        self.escape_job = self.after(sec_to_catch*1000, self.on_escaped)
+        if sec_to_catch <= 0:
+            sec_to_catch = 10
 
-        self.fish_button.configure(text = "Ça mord! Cliquez vite!", 
-                                   state = 'normal',
-                                   command = self.on_reel_click)
+        self.fishing_timer = Timer(self.header_frame, sec_to_catch)
         self.fishing_timer.updateTimerWithPrint()
+        self.escape_job = self.after(sec_to_catch * 1000, self.on_escaped)
+
+        self.fish_button.configure(
+            text = "Ça mord! Cliquez vite!", 
+            state = 'normal',
+            command = self.on_reel_click
+        )
 
 
     def on_reel_click(self):
-
-        #augmente les clicks
-        self.temp_clicks+=1
-        #update le visuel
-        self.fish_button.configure(text = f"({self.temp_clicks_needed - self.temp_clicks} clics restants)")
+        self.clicks_left -= 1
+        self.fish_button.configure(text = f"({self.clicks_left} clics restants)")
         
-        ratio = self.temp_clicks / self.temp_clicks_needed
+        ratio = (self.clicks_total - self.clicks_left) / self.clicks_total
         self.reel_bar.set(ratio)  
-        #check si le joueur a réussi
-        if self.temp_clicks >= self.temp_clicks_needed:
-            
+
+        if self.clicks_left <= 0:
             self.fish_button.configure(command=None, state = "disabled")    
-            self.fishing_timer.stop()
+            if self.fishing_timer != None:
+                self.fishing_timer.stop()
             self.after_cancel(self.escape_job)
 
             self.master.user.updateInventory(self.current_catch)
 
-            
-
             if self.current_catch.isFish:
                 path = f"assets/{self.current_catch.name}.png"
-                current_fish_image = ImageConfig(path,path,100,100)
-
+                current_fish_image = ImageConfig(path, path, 100, 100)
                 self.gallery_dict[self.current_catch.name].configure(image = current_fish_image.getImage())
 
             self.user_fish_label.configure(text = f'Poissons : {self.master.user.getUserNbFish()}')
@@ -567,15 +558,17 @@ class GameScreen(ctk.CTkFrame):
             if self.current_catch.name == self.current_selected_name:
                 self.modify_inventory_list(self.current_catch.name)
 
-            #on retourne au bouton initial
-            
             if self.current_catch.isFish:
-                self.fish_button.configure(text = f"Poisson attrapé!\n{self.current_catch.name}",fg_color="#69F0C1")
+                self.fish_button.configure(text = f"Poisson attrapé!\n{self.current_catch.name}", fg_color="#69F0C1")
                 self.show_catched_fish()
             else:
                 self.fish_button.configure(text = f"Déchet repêché...\n{self.current_catch.name}", fg_color="#949A31")
-            self.after(3*1000, self.normal_fish_button)
-            
+            self.after(3000, self.normal_fish_button)
+
+    def on_escaped(self):
+        if self.clicks_left > 0:
+            self.fish_button.configure(text = "Le poisson s'est échappé...", state = 'disabled')
+            self.after(3000, self.normal_fish_button)           
 
             
     def show_catched_fish(self):
@@ -595,14 +588,6 @@ class GameScreen(ctk.CTkFrame):
         show_fish_label.pack(anchor = 'center', padx = 5, pady = 5)
 
         self.after(3*1000, show_fish_frame.place_forget) 
-
-    def on_escaped(self):
-        if self.temp_clicks_needed>self.temp_clicks:
-            self.fish_button.configure(text = f"Le poisson s'est échappé...",
-                                                    state = 'disabled')
-            self.after(3*1000, self.normal_fish_button)
-
-        
 
             
     def normal_fish_button(self):
