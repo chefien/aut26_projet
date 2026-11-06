@@ -5,7 +5,7 @@ import customtkinter as ctk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from PIL import Image  # cest une librairie qui manipule les images png, jpg etc
-
+from classes_Émilie import Timer
 
 
 
@@ -142,11 +142,14 @@ class SavingSystem():
             catchTemp.setRarity(df.loc[i,"Rarity"])
             catchTemp.setTimeFishing(df.loc[i,"TimeFishing"])
             tempInv.append(catchTemp)
-        self.inventory = tempInv           
+        self.inventory = tempInv      
+        self.user.setUserInventory(self.inventory)
         
         self.username = df.loc[0,"Username"]
         self.level = df.loc[0,"Level"]
         self.playedBefore = df.loc[0,"Status"]
+        self.user.setUserName(self.username)
+        self.user.setUserLevel(self.level)
         return f'chargement du fichier'
     def savingToFile(self):
     # tu vas devoir set avant de sauvegarder un fichier
@@ -225,7 +228,7 @@ class Fishing(ctk.CTkFrame):
         '''
         one def for the attendez, one for the click one for the finish
         '''
-        from classes_Émilie import Timer
+        
         self.catch = catch # needs to be randomised before so you do fish(random choice of fish)
         self.clicks = None
         self.timerPassed= Timer(self.master,self.catch.getTimeFishing())
