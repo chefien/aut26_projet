@@ -8,6 +8,7 @@ import time
 
 class User():
     '''Joueur et ses informations'''
+
     def __init__(self):
 
         #initialement None, on demandera le nom par la suite
@@ -23,6 +24,7 @@ class User():
         self.nbFish = 0
         self.nbTrash = 0
         self.nbCatch = 0
+
 
     #setters
     #après avoir demander le nom
@@ -64,6 +66,7 @@ class User():
     def getUserNbCatch(self):
         return self.nbCatch
 
+
     #met à jour l'inventaire, le total de poissons, de déchets et les deux ensemble
     def updateInventory(self, catch):
         self.inventory.append(catch)
@@ -82,22 +85,20 @@ class User():
         #la condition est que le nombre total de poissons attrappés doit être supérieur ou 
         #égal au niveau actuel + (niveau + niveau-1 + niveau-2 + ... + 1) * 2
         #par exemple:
-        #niveau actuel: 0      1      2      3      4      5      6      7      8
-        #
+        #niveau de l'utilisateur:                 0       1       2       3       4       5       6       7       8
+        #total nécessaire pour changer de niveau:     1       3       8       15      24      35      48      53
+        #différence avec le niveau précédent:        1       2       5       7       9       11      13      15
         if self.nbFish >= (self.level + (sum(range(1, self.level+1))) * 2):
             self.level += 1
             return True
         return False
 
 
-#0    1    2    3    4    5    6    7    8
-#  1    2    5    7    9    11   13   15
-#  1    3    8    15   24   35   48   53
-#(niveau + niveau-1 + niveau-2 + niveau-3 ) * 2 + niveau
 
 
 class Catch():
     '''Poisson ou déchet possible de pêcher'''
+
     #doit être créé avant la pêche car le temps d'attente, le temps de pêche et le nombre de clics pour la pêche sont fait ici
     def __init__(self, data):
 
@@ -163,29 +164,48 @@ class Catch():
 
         elif self.rarity == "uncommon":
 
-            #on veut augmenter un peu le temps d'attente pour que l'utilisateur 
+            #on veut augmenter un peu le temps d'attente pour que l'utilisateur
+            #ait une petite idée de la difficulté de la pêche qui s'en vient
+            #(+1 sec avec la rareté précédente)
             self.timeWaiting = 5  #(en sec)
-            
-            self.clicks = 18
+
+            #on veut augmenter le nombre de clics pour que la difficulté 
+            #augmente avec la rareté, puisque que le temps de pêche reste le même
+            #(+6 clics avec la rareté précédente)
+            self.clicks = 16
 
         elif self.rarity == "rare":
+
+            #(+1 sec avec la rareté précédente)
             self.timeWaiting = 6  #(en sec)
-            
-            self.clicks = 27
+
+            #(+8 clics avec la rareté précédente)
+            self.clicks = 24
 
         elif self.rarity == "epic":
+
+            #(+1 sec avec la rareté précédente)
             self.timeWaiting = 7  #(en sec)
-            
-            self.clicks = 38
+
+            #(+11 clics avec la rareté précédente)
+            self.clicks = 35
 
         elif self.rarity == "legendary":
+
+            #(+1 sec avec la rareté précédente)
             self.timeWaiting = 8  #(en sec)
-            
+
+            #(+15 clics avec la rareté précédente)
             self.clicks = 50
 
+
+        #au cas où il y aurait un problème de chargement
         else:
+
+            #pour pas que l'utilisateur n'attende pour rien
             self.timeWaiting = 0  #(en sec)
-            
+
+            #pour pas que l'utilisateur de travail pour rien
             self.clicks = 0     
 
 
@@ -254,6 +274,8 @@ class Catch():
 
 
 class Timer(): 
+    '''Compte-à-rebours'''
+
     def __init__(self, master, seconds):
 
         #temps inital du timer
@@ -320,7 +342,7 @@ class Timer():
             self.isFinished = True
 
 
-    #getter
+    #getter pour savoir si le compte-à-rebours est terminé
     def getIsFinished(self):
         return self.isFinished
 
