@@ -124,57 +124,82 @@ class SavingSystem():
     def setPlayedBefore(self,status):
         self.playedBefore = status
 
-    def loadingFromCsv(self,file):
-        from classes_Émilie import Catch
-        try:
-            df = pd.read_csv(file)
-        except Exception as e:
-            print(e)
-            return
-        tempInv = []
-        for i in range(len(df)):
-            catchTemp = Catch(self.data)
-            catchTemp.setName(df.loc[i,"Name"])
-            catchTemp.setWeight(df.loc[i,"Weight"])
-            catchTemp.setSize(df.loc[i,"Size"])
-            catchTemp.setIsFish(df.loc[i,"IsFish"])
-            catchTemp.setDescription(df.loc[i,"Description"])
-            catchTemp.setRarity(df.loc[i,"Rarity"])
-            catchTemp.setTimeFishing(df.loc[i,"TimeFishing"])
-            tempInv.append(catchTemp)
-        self.inventory = tempInv      
-        self.user.setUserInventory(self.inventory)
-        
-        self.username = df.loc[0,"Username"]
-        self.level = df.loc[0,"Level"]
-        self.playedBefore = df.loc[0,"Status"]
-        self.user.setUserName(self.username)
-        self.user.setUserLevel(self.level)
-        return f'chargement du fichier'
+    def loadingFromCsv(self, file):
+            from classes_Émilie import Catch
+            try:
+                df = pd.read_csv(file)
+            except Exception as e:
+                print(e)
+                return
+
+            tempInv = []
+            for i in range(len(df)):
+                # si c'était une partie avec 0 catch
+                if df.loc[i, "Name"] == "None":
+                    continue
+
+                catchTemp = Catch(self.data)
+                catchTemp.setName(df.loc[i,"Name"])
+                catchTemp.setWeight(float(df.loc[i,"Weight"]))
+                catchTemp.setSize(float(df.loc[i,"Size"]))
+                catchTemp.setIsFish(bool(df.loc[i,"IsFish"]))
+                catchTemp.setDescription(df.loc[i,"Description"])
+                catchTemp.setRarity(df.loc[i,"Rarity"])
+                catchTemp.setTimeFishing(df.loc[i,"TimeFishing"])
+                tempInv.append(catchTemp)
+
+            self.inventory = tempInv      
+            self.user.setUserInventory(self.inventory)
+            
+            # met à jour les compteurs de poissons et déchets
+            nb_fish = sum(1 for item in tempInv if item.isFish)
+            self.user.setUserNbFish(nb_fish)
+            self.user.setUserNbTrash(len(tempInv) - nb_fish)
+            if hasattr(self.user, 'setUserNbCatsh'):
+                self.user.setUserNbCatsh(len(tempInv))
+
+            #nom et niveau
+            if len(df) > 0:
+                self.username = str(df.loc[0,"Username"])
+                self.level = int(df.loc[0,"Level"])
+                self.playedBefore = df.loc[0,"Status"]
+                self.user.setUserName(self.username)
+                self.user.setUserLevel(self.level)
+
+            return 'chargement du fichier'
+
     def savingToFile(self):
-    # tu vas devoir set avant de sauvegarder un fichier
-        data = {
-            "Name" : [i.getName() for i in self.getInv()],# catch name
-            "Weight" : [i.getWeight() for i in self.getInv()],
-            "Size" : [i.getSize() for i in self.getInv()],
-            "IsFish" : [i.getIsFish() for i in self.getInv()],
-            "Description" : [i.getDescription() for i in self.getInv()],
-            "Rarity" : [i.getRarity() for i in self.getInv()],
-            "TimeFishing" : [i.getTimeFishing() for i in self.getInv()],
-            "Username" : [self.getUsername()] * len(self.getInv()),
-            "Level" : [self.getLevel()] * len(self.getInv()),
-            "Status" : [self.getPlayedBefore()] * len(self.getInv()) }
+    # si l'inventaire est vide, ligne placeholder pour garder le nom et le niveau
+        if len(self.getInv()) == 0:
+            data = {
+                "Name" : ["None"],
+                "Weight" : [0.0],
+                "Size" : [0.0],
+                "IsFish" : [False],
+                "Description" : ["None"],
+                "Rarity" : ["None"],
+                "TimeFishing" : [0],
+                "Username" : [self.getUsername()],
+                "Level" : [self.getLevel()],
+                "Status" : [self.getPlayedBefore()]
+            }
+        else:
+            data = {
+                "Name" : [i.getName() for i in self.getInv()],
+                "Weight" : [i.getWeight() for i in self.getInv()],
+                "Size" : [i.getSize() for i in self.getInv()],
+                "IsFish" : [i.getIsFish() for i in self.getInv()],
+                "Description" : [i.getDescription() for i in self.getInv()],
+                "Rarity" : [i.getRarity() for i in self.getInv()],
+                "TimeFishing" : [i.getTimeFishing() for i in self.getInv()],
+                "Username" : [self.getUsername()] * len(self.getInv()),
+                "Level" : [self.getLevel()] * len(self.getInv()),
+                "Status" : [self.getPlayedBefore()] * len(self.getInv())
+            }
+
         df = pd.DataFrame(data)
         df.to_csv(self.file, index = False)
-
-        return f'sauvegardement du fichier'
-
-        ''' 
-        what to save?
-        inventory, user object, discovered fish, and statistics(for the matplot)
-        
-        i need to add saving from csv and loading from csv, so the load one will create a csv and store everything i just got and then the save will take the old csv and either overwrite (which i think is not that possible ) or it takes old,deletes it and put a new folder in its place (which is literally overwriting i just realised lmao)
-        '''
+        return 'sauvegardement du fichier'
 
                 
 class StatsPlot(ctk.CTkFrame):
