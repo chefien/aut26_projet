@@ -8,8 +8,9 @@ Chaque frame est une classe, ce qui simplifie la programmation et la rend claire
 
 import customtkinter as ctk
 from classes_Émilie import User, Catch, Timer
-from classe_khadija import ImageConfig, Data, Fishing, SavingSystem
+from classe_khadija import ImageConfig, Data, SavingSystem, GifImage
 from PIL import Image, ImageEnhance
+import sys
 
 ##Pour les stats
 import matplotlib.pyplot as plt
@@ -27,34 +28,54 @@ class TitleScreen(ctk.CTkFrame):
         self.bg_label = ctk.CTkLabel(self, text = '', image = bg.getImage())
         self.bg_label.place(x = 0, y = 0, relwidth = 1, relheight = 1)
 
-        #Titre du jeu
-        
-        self.label = ctk.CTkLabel(self, text = "Fish le poisson", font = ("arial", 28, 'bold'))
-        self.label.pack(pady = 40)
+        self.menu_card = ctk.CTkFrame(
+            self, 
+            fg_color="#f1e9c8",
+            width=400
+        )
+        self.menu_card.place(relx=0.5, rely=0.5, anchor="center")
 
-        #Bouton Jouer
-        #Si le jeu a deja load ou non, va etre pour l'instant juste jouer
+        # Titre
+        self.title_label = ctk.CTkLabel(
+            self.menu_card, 
+            text="Fish le poisson", 
+            font=("arial", 24, "bold"),
+            text_color="#1f3323"
+        )
+        self.title_label.pack(pady=(25, 5), padx=25)
+
+        subtitle = ctk.CTkLabel(
+            self.menu_card, 
+            text="Pêchez les tous!", 
+            font=("arial", 16, "italic"),
+            text_color="#52796f"
+        )
+        subtitle.pack(pady=(0, 20))
+
+        # boutons
+        btn_w = 200
+        btn_h = 38
+        btn_font = ("arial", 13, "bold")
+        btn_rad = 10
+
         if self.master.user.getUserName() is not None:
-            self.play_btn = ctk.CTkButton(self, text = 'Continuer', command = self.on_play, corner_radius=0)
+            self.play_btn = ctk.CTkButton(self.menu_card, text='Continuer', font=btn_font, width=btn_w, height=btn_h, corner_radius=btn_rad, fg_color="#3d5a45", hover_color="#2c4232", command=self.on_play)
+            self.play_btn.pack(pady=5)
 
-            self.new_play_btn = ctk.CTkButton(self, text = 'Nouvelle Partie', command = self.on_new_play, corner_radius=0, fg_color="#b12626")
-            self.new_play_btn.pack(pady = 10)
+            self.new_play_btn = ctk.CTkButton(self.menu_card, text='Nouvelle Partie', font=btn_font, width=btn_w, height=btn_h, corner_radius=btn_rad, fg_color="#b12626", hover_color="#851c1c", command=self.on_new_play)
+            self.new_play_btn.pack(pady=5)
         else:
-            self.play_btn = ctk.CTkButton(self, text = 'Nouvelle Partie', command = self.on_new_play, corner_radius=0,fg_color="#b12626")
+            self.play_btn = ctk.CTkButton(self.menu_card, text='Nouvelle Partie', font=btn_font, width=btn_w, height=btn_h, corner_radius=btn_rad, fg_color="#3d5a45", hover_color="#2c4232", command=self.on_new_play)
+            self.play_btn.pack(pady=5)
 
-        self.play_btn.pack(pady = 10)
+        self.load_btn = ctk.CTkButton(self.menu_card, text='Charger', font=btn_font, width=btn_w, height=btn_h, corner_radius=btn_rad, fg_color="#52796f", hover_color="#3d5a45", command=self.on_load)
+        self.load_btn.pack(pady=5)
 
-        #Bouton Charger
-        self.load_btn = ctk.CTkButton(self, text = 'Charger', command = self.on_load, corner_radius=0)
-        self.load_btn.pack(pady = 10)
+        self.credit_btn = ctk.CTkButton(self.menu_card, text='Crédits', font=btn_font, width=btn_w, height=btn_h, corner_radius=btn_rad, fg_color="#52796f", hover_color="#3d5a45", command=self.credit_frame)
+        self.credit_btn.pack(pady=5)
 
-        #Bouton Crédits
-        self.credit_btn = ctk.CTkButton(self, text = 'Crédits', command = self.credit_frame, corner_radius=0)
-        self.credit_btn.pack(pady = 10)
-
-        #Bouton Charger
-        self.quit_btn = ctk.CTkButton(self, text = 'Quitter', command = self.master.on_closing, corner_radius=0)    
-        self.quit_btn.pack(pady = 10)
+        self.quit_btn = ctk.CTkButton(self.menu_card, text='Quitter', font=btn_font, width=btn_w, height=btn_h, corner_radius=btn_rad, fg_color="#8b3a3a", hover_color="#632525", command=self.master.on_closing)    
+        self.quit_btn.pack(pady=(5, 25))
 
     def on_play(self):
         self.master.show_frame(GameScreen)
@@ -74,26 +95,53 @@ class TitleScreen(ctk.CTkFrame):
     
 
 class newGameScreen(ctk.CTkFrame):
-    def __init__(self,master):
+    def __init__(self, master):
         super().__init__(master)
-        
-        # Demande à l'utilisateur l'information requise
-        self.label = ctk.CTkLabel(self,text="Veuillez entrer votre nom : ")
-        self.label.pack(expand = True, pady = (0,40))
-        self.entry = ctk.CTkEntry(self, placeholder_text= 'Écrire ici...')
-        self.entry.pack(pady=10, expand = True)
+        self.configure(fg_color="#9fb498") 
 
-        #Une fois prêt, l'utilisateur va aller à l'écran du jeu à l'aide d'un bouton
-        self.button = ctk.CTkButton(self, text = 'Jouer', command=self.on_next)
-        self.button.pack(pady = 10, expand = True)
+        self.card = ctk.CTkFrame(self, fg_color="#dee6ed", corner_radius=15, width=500)
+        self.card.place(relx=0.5, rely=0.5, anchor="center")
+
+        # Titre
+        title = ctk.CTkLabel(self.card, text="Bienvenue dans Fish le poisson !", font=("arial", 20, "bold"), text_color="#1f2937")
+        title.pack(pady=(25,10), padx=30)
+
+        # explication du jeu
+        intro_text = (
+            "Lancez votre ligne et surveillez l'étang.\n"
+            "Cliquez vite dès que ça mord pour remonter la prise. \n"
+            "Complétez votre carnet avec les poissons les plus rares!"
+        )
+        self.desc_label = ctk.CTkLabel(self.card, text=intro_text, font=("arial", 13), justify="left")
+        self.desc_label.pack(pady=10, padx=30)
+
+        # Demande du nom
+        self.label = ctk.CTkLabel(self.card, text="Entrez votre nom de pêcheur :", font=("arial", 13, "bold"), text_color="#1f2937")
+        self.label.pack(pady=(15, 5))
+
+        self.entry = ctk.CTkEntry(self.card, placeholder_text="Écrire ici...", width=260, height=35, corner_radius=8)
+        self.entry.pack(pady=5)
+
+        # Bouton Jouer
+        self.button = ctk.CTkButton(
+            self.card, 
+            text="Commencer à pêcher!", 
+            font=("arial", 14, "bold"),
+            command=self.on_next, 
+            fg_color="#3d5a45", 
+            hover_color="#2c4232", 
+            corner_radius=10,
+            height=40,
+            width=260
+        )
+        self.button.pack(pady=(15, 25))
 
     def on_next(self):
-        #Initialise l'user
-        self.master.user.setUserName(self.entry.get())
-        #Lance l'écran de jeu
-        if (self.entry.get() == '') or (self.entry.get() == None):
-            self.label.configure(text = 'Veuillez entrer un nom valide')
+        name = self.entry.get().strip()
+        if name == "":
+            self.label.configure(text = 'Veuillez entrer un nom valide !', text_color="#b12626")
         else:
+            self.master.user.setUserName(name)
             self.master.show_frame(GameScreen)
 
 class GameScreen(ctk.CTkFrame):
@@ -129,19 +177,19 @@ class GameScreen(ctk.CTkFrame):
        ####Boutons#####
 
         #Bouton sauvegarder
-       self.save_btn = ctk.CTkButton(self.top_menu, text = 'Sauvegarder', command = self.on_save)
+       self.save_btn = ctk.CTkButton(self.top_menu, text = 'Sauvegarder', command = self.on_save,fg_color="#52796f", hover_color="#3d5a45", corner_radius=8)
        self.save_btn.pack(padx = (0,10), side = 'left')
 
         #Bouton Charger
-       self.load_btn = ctk.CTkButton(self.top_menu, text = 'Charger', command = self.on_load)
+       self.load_btn = ctk.CTkButton(self.top_menu, text = 'Charger', command = self.on_load,fg_color="#52796f", hover_color="#3d5a45", corner_radius=8)
        self.load_btn.pack(padx = 10, side = 'left')
 
         #Bouton Stats
-       self.stats_btn = ctk.CTkButton(self.top_menu, text = 'Statistiques du jeu', command = self.on_stats)
+       self.stats_btn = ctk.CTkButton(self.top_menu, text = 'Statistiques du jeu', command = self.on_stats,fg_color="#5297A8", hover_color="#3773a3", corner_radius=8)
        self.stats_btn.pack(padx = 10, side = 'left')
 
        #Bouton retour
-       self.back_btn = ctk.CTkButton(self.top_menu, text = 'Retourner au menu principal', command = self.on_return)
+       self.back_btn = ctk.CTkButton(self.top_menu, text = 'Retourner au menu principal', command = self.on_return,fg_color="#52796f", hover_color="#3d5a45", corner_radius=8)
        self.back_btn.pack(padx = (10,0), side = 'right' )
 
 
@@ -290,7 +338,7 @@ class GameScreen(ctk.CTkFrame):
     #Colonne de droite, détails du poisson#
     #######################################
     def create_right_panel(self):
-        self.right_panel = ctk.CTkFrame(self.main_container,fg_color="#dee6ed")
+        self.right_panel = ctk.CTkFrame(self.main_container,fg_color="#dee6ed",corner_radius=10)
         self.right_panel.grid(row = 0, column = 2, sticky = 'nsew', pady = 10, padx = 10)
 
         label_selec = ctk.CTkLabel(self.right_panel, text = 'Sélection :')
@@ -301,7 +349,7 @@ class GameScreen(ctk.CTkFrame):
 
         self.frame_fish_image = ctk.CTkFrame(self.right_panel, 
                                              height=150, width=150, 
-                                             border_color="#000000", 
+                                             border_color="#9fb498", 
                                              border_width=2,
                                              corner_radius=0)
         self.frame_fish_image.pack(pady = 5)
@@ -764,8 +812,9 @@ class MainApp(ctk.CTk):
         self.current_frame.pack(expand = True, fill = 'both')
 
     def on_closing(self):
-        self.quit()
+        plt.close('all')
         self.destroy()
+        sys.exit(0)
 
 
         
